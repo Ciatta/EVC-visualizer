@@ -1,0 +1,18 @@
+funzioni per spostare le guardie 
+- check hex ultima colonna
+
+
+interfaccia:
+    scegliere arco dal grafo
+    mostrare archi
+
+    app online o eseguibile
+   
+   
+  
+
+da chiedere:
+- triangular: stripe da 1 sempre piene, between tile e stripe da 2, caso mancante
+- square: algoritmo ottimizzato
+    
+
