@@ -1,5 +1,4 @@
 from flask import Flask, render_template, request
-#import webview
 from main import main, defend
 
 app = Flask(__name__)
@@ -33,8 +32,9 @@ def attack():
         return render_template('defend.html', edge=edge, display='inline-block', message=m)
 
 
-#webview.create_window('Flask to exe', app)
  
 if __name__ == '__main__':
     app.run(debug=True)
-    #webview.start()
+  
+
+#https://evc-visualizer.onrender.com

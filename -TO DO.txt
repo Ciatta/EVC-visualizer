@@ -1,18 +1,27 @@
-funzioni per spostare le guardie 
+da chiedere:
+- triangular:
+    Le stripe da 1 sono sempre piene?
+    Caso tra tile e stripe da 2
+    Alcuni casi non sono specificati nei disegni
+    Caso in cui entrambi i nodi hanno guardie
+- square:
+    Algoritmo ottimizzato
+- app online ma lenta
+    
+
+
+
+sistemare:
 - check hex ultima colonna
 
-
 interfaccia:
-    scegliere arco dal grafo
-    mostrare archi
+- scegliere arco dal grafo
+- mostrare archi
 
-    app online o eseguibile
+
    
    
   
 
-da chiedere:
-- triangular: stripe da 1 sempre piene, between tile e stripe da 2, caso mancante
-- square: algoritmo ottimizzato
-    
+
 
