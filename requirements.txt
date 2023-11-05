@@ -4,5 +4,6 @@ Flask==2.2.2
 matplotlib==3.7.0
 networkx==2.8.4
 # Editable install with no version control (Pillow==9.4.0)
--e c:\users\giada\anaconda3\lib\site-packages\pillow-9.4.0-py3.10.egg-info
+#-e c:\users\giada\anaconda3\lib\site-packages\pillow-9.4.0-py3.10.egg-info
 pywebview==4.4
+Pillow==9.4.0
