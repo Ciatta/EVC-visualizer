@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request
-import webview
+#import webview
 from main import main, defend
 
 app = Flask(__name__)
