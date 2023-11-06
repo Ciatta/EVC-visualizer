@@ -15,12 +15,13 @@
 </head>
 <body>
     <div class="container text-center  my-2">
-        <h1>Create the grid</h1>
-        <form action="/result" method="post">
-            <label for="width">Width:</label>
+        <h1>Eternal Vertex Cover Visualizer</h1>
+      
+        <form class="my-4" action="/result" method="post">
+            <label for="width">Insert grid width:</label>
             <input type="number" id="width" value="6" name="width">
             <br>
-            <label for="height">Height:</label>
+            <label for="height">Insert grid height:</label>
             <input type="number" id="height" value="6" name="height">
             <br>
             <label for="shape">Select a shape for the grid:</label>
@@ -42,7 +43,7 @@
         <p style="font-size:16px">
         </br>
             Here is a tool for visualizing Eternal Vertex Cover over grid graphs. </br>
-            1. Create the grid chosing height, width and the grid type (please avoid grids bigger than 20x20)</br>
+            1. Create the grid chosing height, width and the grid shape (please avoid grids bigger than 20x20)</br>
             2. Select the edge you want to attack (eg. (1,2)) and watch how guards move in order to protect the edge and
             keep all vertex covered
         </br>

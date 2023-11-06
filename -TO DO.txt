@@ -4,10 +4,18 @@ da chiedere:
     Caso tra tile e stripe da 2
     Alcuni casi non sono specificati nei disegni
     Caso in cui entrambi i nodi hanno guardie
+    pag.17 ruotare + specchiare
 - square:
     Algoritmo ottimizzato
 - app online ma lenta
     
+
+
+
+
+
+
+
 
 
 
