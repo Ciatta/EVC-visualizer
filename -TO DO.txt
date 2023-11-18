@@ -1,7 +1,7 @@
 da chiedere:
 - triangular:
     Le stripe da 1 sono sempre piene?
-    Caso tra tile e stripe da 2
+    Caso tra tile e stripe da 2 -> esterna alternata, altra piena
     Alcuni casi non sono specificati nei disegni
     Caso in cui entrambi i nodi hanno guardie
     pag.17 ruotare + specchiare
@@ -9,7 +9,7 @@ da chiedere:
     Algoritmo ottimizzato
 - app online ma lenta
     
-
+replay button
 
 
 
