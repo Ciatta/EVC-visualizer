@@ -1,5 +1,6 @@
 from graph_maker import shapes, get_labels, get_pos
 import networkx as nx
+import matplotlib.pyplot as plt
 
 def put_guards(shape, G, h, w):
     if (shape == shapes.hexagon): return put_guards_h(G, h, w)
@@ -35,10 +36,17 @@ def put_guards_t(G, h, w):
             guards.append(node)
         elif (j+1)%3==0 and (i+1)%3 == 0:
             guards.append(node)
-        if node[1]==w-1 and w%3==1:
-            guards.append(node)
-        if node[0]==0 and h%3==1:
-            guards.append(node)
+        if w!=2 and h!=2:
+            if node[1]==w-1 and w%3==1:
+                guards.append(node)
+            elif node[1]==w-2 and w%3==2:
+                guards.append(node)
+        
+            if node[0]==0 and h%3==1:
+                guards.append(node)
+            elif node[0]==1 and h%3==2:
+                guards.append(node)
+        
     G_guards = nx.Graph()
     G_guards.add_nodes_from(guards)
     return G_guards
@@ -477,7 +485,9 @@ def move_guards_t (G, G_guards, pos, edge, h, w):
     bet_tiles_y_s2={1: [(None, None), (-1,0), (0,0), (0,0), (None, None), (-1,0), (0,-1), (0,0), (None, None),
                         (None, None), (1,1), (0,0), (0,0), (None, None), (0,-1), (1,1), (0,0), (None, None)],
                     2: [(None, None), (-1,0), (0,0), (0,0), (None, None), (-1,0), (1,0), (-1,-1), (None, None),
-                        (None, None), (1,1), (0,0), (0,0), (None, None), (0,-1), (1,1), (0,0), (None, None)]}
+                        (None, None), (1,1), (0,0), (0,0), (None, None), (0,-1), (1,1), (0,0), (None, None)],
+                    3: [(None, None), (0,0), (-1,-1), (0,1), (None, None), (0,0), (0,0), (-1,-1), (None, None),
+                        (None, None), (0,0), (0,1), (1,0), (None, None), (0,0), (0,0), (1,0), (None, None)]}
     
     bet_tiles_x_s1={1: [(1,0), (None, None), (0,0), (-1,-1), (None, None), (0,0),
                         (0,0), (-1,-1), (None, None), (0,0), (0,1), (None, None),
@@ -491,7 +501,10 @@ def move_guards_t (G, G_guards, pos, edge, h, w):
                         (1,1), (0,0), (None, None), (0,1), (0,0), (None, None)],
                     2: [(None, None), (-1,0), (0,0), (None, None), (0,-1), (0,0),
                         (0,0), (None, None), (1,1), (0,0), (None, None), (0,-1),
-                        (1,1), (0,0), (None, None), (-1,0), (0,0), (None, None)]}
+                        (1,1), (0,0), (None, None), (-1,0), (0,0), (None, None)],
+                    3: [(None, None), (0,0), (1,0), (None, None), (0,0), (-1,-1),
+                        (0,1), (None, None), (0,0), (-1,-1), (None, None), (0,0),
+                        (0,0), (0,1), (None, None), (0,0), (1,0), (None, None)]}
     
     stripe_tile_x_s1={1: [(1,0), (None, None), (0,0), (-1,-1), (0,0), (-1,-1),
                           (None, None), (0,1), (None, None), (0,0), (1,0), (0,1)],
@@ -513,7 +526,7 @@ def move_guards_t (G, G_guards, pos, edge, h, w):
                       2: [(0,-1), (-1,0), (0,0), (None,None), (0,1), (0,0),
                           (0,0), (None,None), (0,-1), (1,1), (0,0), (None,None)]}
     
-    in_stripe_y_s1 ={1:[(0,-1), (0,0), (None,None), (0,-1), (0,0), (None,None),
+    stripe_h2_s1 ={1:[(0,-1), (0,0), (None,None), (0,-1), (0,0), (None,None),
                         (None,None), (1,1), (0,0), (None,None), (1,1), (0,0)],
                      2:[(1,0), (-1,-1), (None,None), (-1,-1), (0,0), (None,None),
                         (None,None), (1,1), (1,0), (None,None), (1,0), (0,1)],
@@ -526,7 +539,7 @@ def move_guards_t (G, G_guards, pos, edge, h, w):
                      6:[(0,-1), (0,0), (None,None), (1,0), (1,0), (None,None),
                         (None,None), (1,0), (0,1), (None,None), (-1,0), (0,0)]}
     
-    in_stripe_y_s2 ={1:[(None,None), (0,0), (-1,-1), (None,None), (0,0), (-1,-1),
+    stripe_h2_s2 ={1:[(None,None), (0,0), (-1,-1), (None,None), (0,0), (-1,-1),
                         (0,1), (None,None), (0,0), (0,1), (None,None), (0,0)],
                      2:[(None,None), (-1,0), (-1,-1), (None,None), (0,0), (0,-1),
                         (1,1), (None,None), (1,1), (-1,0), (None,None), (-1,0)],
@@ -539,7 +552,33 @@ def move_guards_t (G, G_guards, pos, edge, h, w):
                      6:[(None,None), (0,0), (0,-1), (None,None), (-1,0), (-1,0),
                         (0,1), (None,None), (-1,0), (1,0), (None,None), (0,0)]}
     
-    in_stripe_x_s1={1:[(1,0), (None,None), (0,0), (-1,-1), (None,None), (0,0),
+    in_stripe_y_s1 ={1:[(0,-1), (0,0), (None,None), (0,-1), (0,0), (None,None),
+                        (1,0), (1,1), (0,0), (1,0), (1,1), (0,0)],
+                     2:[(1,0), (-1,-1), (None,None), (-1,-1), (0,0), (None,None),
+                        (1,0), (1,1), (1,0), (1,0), (1,0), (0,1)],
+                     3:[(1,0), (1,0), (None,None), (1,0), (1,0), (None,None),
+                        (0,0), (0,0), (0,0), (0,0), (0,0), (0,0)],
+                     4:[(0,-1), (0,0), (None,None), (-1,0), (1,0), (None,None),
+                        (1,0), (1,0), (1,0), (1,0), (0,1), (0,0)],
+                     5:[(0,-1), (1,0), (None,None), (1,0), (-1,-1), (None,None),
+                        (1,0), (0,1), (0,0), (1,0), (1,1), (0,0)],
+                     6:[(0,-1), (0,0), (None,None), (1,0), (1,0), (None,None),
+                        (1,0), (1,0), (0,1), (0,0), (0,0), (0,0)]}
+    
+    in_stripe_y_s2 ={1:[(None,None), (0,0), (-1,-1), (None,None), (0,0), (-1,-1),
+                        (0,1), (-1,0), (0,0), (0,1), (-1,0), (0,0)],
+                     2:[(None,None), (-1,0), (-1,-1), (None,None), (0,0), (0,-1),
+                        (1,1), (-1,0), (1,1), (-1,0), (-1,0), (-1,0)],
+                     3:[(None,None), (-1,0), (-1,0), (None,None), (-1,0), (-1,0),
+                        (0,0), (0,0), (0,0), (0,0), (0,0), (0,0)],
+                     4:[(None,None), (0,0), (1,0), (None,None), (0,-1), (-1,0),
+                        (0,1), (-1,0), (-1,0), (-1,0), (-1,0), (0,0)],
+                     5:[(None,None), (0,-1), (-1,0), (None,None), (-1,0), (-1,-1),
+                        (0,1), (-1,0), (0,0), (1,1), (-1,0), (0,0)],
+                     6:[(None,None), (0,0), (0,-1), (None,None), (-1,0), (-1,0),
+                        (0,1), (-1,0), (-1,0), (0,0), (0,0), (0,0)]}
+    
+    stripe_w2_s1={1:[(1,0), (None,None), (0,0), (-1,-1), (None,None), (0,0),
                        (1,0), (None,None), (0,0), (-1,-1), (None,None), (0,0)],
                     2:[(0,-1), (None,None), (0,-1), (0,1), (None,None), (0,0),
                        (0,-1), (None,None), (0,-1), (0,1), (None,None), (0,0)],
@@ -551,8 +590,7 @@ def move_guards_t (G, G_guards, pos, edge, h, w):
                        (0,1), (None,None), (0,-1), (-1,0), (None,None), (0,0)],
                     6:[(1,0), (None,None), (0,0), (0,-1), (None,None), (-1,0),
                        (0,-1), (None,None), (0,-1), (0,1), (None,None), (0,0)]}
-    
-    in_stripe_x_s2={1:[(None,None), (-1,0), (0,0), (None,None), (1,1), (0,0),
+    stripe_w2_s2={1:[(None,None), (-1,0), (0,0), (None,None), (1,1), (0,0),
                        (None,None), (-1,0), (0,0), (None,None), (1,1), (0,0),],
                     2:[(None,None), (0,-1), (0,1), (None,None), (0,1), (0,0),
                        (None,None), (0,-1), (0,1), (None,None), (0,1), (0,0)],
@@ -564,6 +602,32 @@ def move_guards_t (G, G_guards, pos, edge, h, w):
                        (None,None), (0,1), (1,0), (None,None), (0,1), (0,0)],
                     6:[(None,None), (-1,0), (0,0), (None,None), (1,0), (0,1),
                        (None,None), (0,-1), (0,1), (None,None), (0,1), (0,0)]}
+
+    in_stripe_x_s1={1:[(1,0), (None,None), (0,1), (-1,-1), (0,1), (0,0),
+                       (1,0), (None,None), (0,1), (-1,-1), (0,1), (0,0)],
+                    2:[(0,0), (None,None), (0,0), (0,1), (0,0), (0,0),
+                       (0,0), (None,None), (0,0), (0,1), (0,0), (0,0)],
+                    3:[(1,0), (None,None), (0,1), (-1,0), (0,0), (0,0),
+                       (0,0), (None,None), (1,1), (-1,-1), (0,1), (0,0)],
+                    4:[(0,0), (None,None), (1,1), (-1,-1), (0,1), (0,-1),
+                       (1,1), (None,None), (0,1), (0,-1), (0,1), (-1,0)],
+                    5:[(1,0), (None,None), (0,1), (0,-1), (0,1), (0,-1),
+                       (0,1), (None,None), (0,1), (-1,0), (0,0), (0,0)],
+                    6:[(1,0), (None,None), (0,1), (0,-1), (0,1), (-1,0),
+                       (0,0), (None,None), (0,0), (0,1), (0,0), (0,0)]}
+    
+    in_stripe_x_s2={1:[(0,-1), (-1,0), (0,-1), (None,None), (1,1), (0,0),
+                       (0,-1), (-1,0), (0,-1), (None,None), (1,1), (0,0)],
+                    2:[(0,0), (0,-1), (0,0), (None,None), (0,0), (0,0),
+                       (0,0), (0,-1), (0,0), (None,None), (0,0), (0,0)],
+                    3:[(0,-1), (-1,0), (0,0), (None,None), (0,0), (0,0),
+                       (0,0), (-1,-1), (0,-1), (None,None), (1,1), (0,0)],
+                    4:[(0,0), (-1,-1), (0,-1), (None,None), (1,1), (-1,-1),
+                       (0,-1), (0,1), (0,-1), (None,None), (1,0), (0,1)],
+                    5:[(0,-1), (-1,0), (0,-1), (None,None), (0,-1), (0,1),
+                       (0,-1), (0,1), (1,0), (None,None), (0,0), (0,0)],
+                    6:[(0,-1), (-1,0), (0,-1), (None,None), (1,0), (0,1),
+                       (0,0), (0,-1), (0,0), (None,None), (0,0), (0,0)]}
     
 
     easy_case = False
@@ -590,7 +654,14 @@ def move_guards_t (G, G_guards, pos, edge, h, w):
     stripe_tile_x = False
     bet_tiles_x = False
     in_tile = False
-    if stripe_y == 1 and (pos1[1]==0 or pos2[0]==0):
+    h_2 = False
+    w_2 = False
+    print(pos1, pos2)
+    if h==2: h_2 =True
+    elif stripe_y == 1 and (pos1[1]==0 or pos2[0]==0):
+        stripe_tile_y = True
+        print("------------between stripe and tile------------")
+    elif stripe_y == 2 and ((pos1[1]==-1 and pos2[1]==-2) or (pos2[1]==-1 and pos1[1]==-2)):
         stripe_tile_y = True
         print("------------between stripe and tile------------")
     elif stripe_y ==2 and (pos1[1]==0 or pos1[1]==-1) and (pos2[1]==0 or pos2[1]==-1):
@@ -607,7 +678,11 @@ def move_guards_t (G, G_guards, pos, edge, h, w):
                 print("------------inside tile------------")
                 break
     print("++++++++++++++++++++++++++++++++++++++++")
-    if stripe_x == 1 and (pos1[0]==w-1 or pos2[0]==w-1):
+    if w==2: w_2 =True
+    elif stripe_x == 1 and (pos1[0]==w-1 or pos2[0]==w-1):
+        stripe_tile_x = True
+        print("------------between stripe and tile------------")
+    elif stripe_x == 2 and ((pos1[0]==w-2 and pos2[0]==w-3) or (pos1[0]==w-3 and pos2[0]==w-2)):
         stripe_tile_x = True
         print("------------between stripe and tile------------")
     elif stripe_x ==2 and (pos1[0]==w-1 or pos1[0]==w-2) and (pos2[0]==w-1 or pos2[0]==w-2):
@@ -629,11 +704,47 @@ def move_guards_t (G, G_guards, pos, edge, h, w):
     pos1_t = (pos1[0]%3, ((-pos1[1]+stripe_y)%3))
     pos2_t = (pos2[0]%3, ((-pos2[1]+stripe_y)%3))
     dir_e = (pos2[0]-pos1[0], pos2[1]-pos1[1])
-    #tile_18=[]
-    #tile =[]
 
-    if in_stripe_y:
-        strat = []
+    strat = []
+    if h_2:
+        x0 = pos1[0]//3*3
+        y0 = -((-pos1[1]-stripe_y)//3*3)-stripe_y
+       
+        tile_12 = [(0, 0), (1,0), (2,0), (3, 0),(4, 0), (5,0),
+                   (0, -1), (1,-1), (2,-1), (3, -1),(4, -1), (5,-1)]
+       
+        i_t = tile_12.index((pos1[0]%6, pos1[1]))
+        if s1:
+            print("s1")
+            stripe_h2_s1
+            for l in list(stripe_h2_s1.values()):
+                if l[i_t]==dir_e:
+                    strat = l       
+        else:
+            print("s2")
+            for l in list(stripe_h2_s2.values()):
+                if l[i_t]==dir_e:
+                    strat = l
+    elif w_2:
+        x0 = pos1[0]//3*3
+        y0 = -((-pos1[1]-stripe_y)//3*3)-stripe_y
+       
+        tile_12 = [(w-2,0), (w-1,0), (w-2,1), (w-1,1), (w-2,2), (w-1,2),
+                   (w-2,3), (w-1,3), (w-2,4), (w-1,4), (w-2,5), (w-1,5)]
+        i_t = tile_12.index((pos1[0], -pos1[1]-stripe_y%6))
+        print(tile_12)
+        print(pos1)
+        print((pos1[0], -pos1[1]-stripe_y%6))
+        print(i_t, dir_e)
+        if s1:
+            for l in list(stripe_w2_s1.values()): 
+                if l[i_t]==dir_e:
+                    strat = l       
+        else:
+            for l in list(stripe_w2_s2.values()):
+                if l[i_t]==dir_e:
+                    strat = l
+    elif in_stripe_y:
         x0 = pos1[0]//3*3
         y0 = -((-pos1[1]-stripe_y)//3*3)-stripe_y
        
@@ -653,7 +764,6 @@ def move_guards_t (G, G_guards, pos, edge, h, w):
                     strat = l
     
     elif in_stripe_x:
-        strat = []
         x0 = pos1[0]//3*3
         y0 = -((-pos1[1]-stripe_y)//3*3)-stripe_y
        
@@ -679,7 +789,6 @@ def move_guards_t (G, G_guards, pos, edge, h, w):
         print(strat)
 
     elif stripe_tile_x:
-        strat = []
         x0 = pos1[0]//3*3
         y0 = -((-pos1[1]-stripe_y)//3*3)-stripe_y
         if dir_e[0]==1:
@@ -704,15 +813,14 @@ def move_guards_t (G, G_guards, pos, edge, h, w):
                     strat = l
 
     elif stripe_tile_y:
-        strat = []
         x0 = pos1[0]//3*3
         y0 = -((-pos1[1]-stripe_y)//3*3)-stripe_y
         if dir_e[1]==1:
-            tile_12 = [(x0, 0), (x0+1,0), (x0+2,0), (x0, -1), (x0+1,-1), (x0+2,-1),
-                       (x0, -2), (x0+1,-2), (x0+2,-2), (x0, -3), (x0+1,-3), (x0+2,-3)]
+            tile_12 = [(x0, 0-stripe_y+1), (x0+1,0-stripe_y+1), (x0+2,0-stripe_y+1), (x0, -1-stripe_y+1), (x0+1,-1-stripe_y+1), (x0+2,-1-stripe_y+1),
+                       (x0, -2-stripe_y+1), (x0+1,-2-stripe_y+1), (x0+2,-2-stripe_y+1), (x0, -3-stripe_y+1), (x0+1,-3-stripe_y+1), (x0+2,-3-stripe_y+1)]
         else:
-            tile_12 = [(x0, 0), (x0+1,0), (x0+2,0), (x0, -1), (x0+1,-1), (x0+2,-1),
-                       (x0, -2), (x0+1,-2), (x0+2,-2), (x0, -3), (x0+1,-3), (x0+2,-3)]
+            tile_12 = [(x0, 0-stripe_y+1), (x0+1,0-stripe_y+1), (x0+2,0-stripe_y+1), (x0, -1-stripe_y+1), (x0+1,-1-stripe_y+1), (x0+2,-1-stripe_y+1),
+                       (x0, -2-stripe_y+1), (x0+1,-2-stripe_y+1), (x0+2,-2-stripe_y+1), (x0, -3-stripe_y+1), (x0+1,-3-stripe_y+1), (x0+2,-3-stripe_y+1)]
         i_t = tile_12.index(pos1)
 
         if s1:
@@ -726,10 +834,7 @@ def move_guards_t (G, G_guards, pos, edge, h, w):
                 if l[i_t]==dir_e:
                     strat = l
 
-
     elif bet_tiles_y:
-        strat = []
-        
         x0 = pos1[0]//3*3
         y0 = -((-pos1[1]-stripe_y)//3*3)-stripe_y
         if dir_e[1]==-1:
@@ -750,8 +855,8 @@ def move_guards_t (G, G_guards, pos, edge, h, w):
             for l in list(bet_tiles_y_s2.values()):
                 if l[i_t]==dir_e:
                     strat = l
+   
     elif bet_tiles_x:
-        strat = []
         x0 = pos1[0]//3*3
         y0 = -((-pos1[1]-stripe_y)//3*3)-stripe_y
         if dir_e[0]==1:
@@ -777,7 +882,6 @@ def move_guards_t (G, G_guards, pos, edge, h, w):
                     strat = l
 
     elif in_tile:
-        strat = []
         x0 = pos1[0]//3*3
         y0 = -((-pos1[1]-stripe_y)//3*3)-stripe_y
         tile = [(x0, y0), (x0+1,y0), (x0+2,y0), (x0, y0-1), (x0+1,y0-1), (x0+2,y0-1), (x0, y0-2), (x0+1,y0-2), (x0+2,y0-2)]
@@ -798,162 +902,185 @@ def move_guards_t (G, G_guards, pos, edge, h, w):
     for x,y in G_guards.nodes():
         print("-----------------------------")
         print(pos[(x,y)])
-        if easy_case:
+        if h_2:
+            print(tile_12)
+            print(strat)
+            for i in range(len(strat)):
+                if (pos[(x,y)][0]%6, pos[(x,y)][1]) == tile_12[i]:
+                    pos[(x,y)] = (pos[(x,y)][0]+strat[i][0], pos[(x,y)][1]+strat[i][1])
+                    break
+        elif w_2:
+            print(tile_12)
+            for i in range(len(strat)):
+                    if (pos[(x,y)][0], -pos[(x,y)][1]-stripe_y%6) == tile_12[i]:
+                        if strat[i]!=(None,None):
+                            pos[(x,y)] = (pos[(x,y)][0]+strat[i][0], pos[(x,y)][1]+strat[i][1])
+                            break
+        elif easy_case:
             if pos[(x,y)]==pos1: pos[(x,y)]=pos2
             elif pos[(x,y)]==pos2: pos[(x,y)]=pos1
         elif in_stripe_y:
-            if pos[(x,y)][1]==0 or pos[(x,y)][1]==-1:
+            if (pos[(x,y)][1]==0 or pos[(x,y)][1]==-1) and pos[(x,y)][0]<w-stripe_x:
                 print("0 o -1")
                 for i in range(len(strat)):
                     if (pos[(x,y)][0]%6, pos[(x,y)][1]) == tile_12[i]:
-                        if pos[(x,y)][0]+strat[i][0]<h:
+                        if pos[(x,y)][0]+strat[i][0]<h and strat[i]!=(None,None):
                             pos[(x,y)] = (pos[(x,y)][0]+strat[i][0], pos[(x,y)][1]+strat[i][1])
-                        break
+                            break
             elif pos[(x,y)][0]>=w-stripe_x: 
                 tile = [(w-2,0), (w-1,0), (w-2,1), (w-1,1), (w-2,2), (w-1,2),
                         (w-2,3), (w-1,3), (w-2,4), (w-1,4), (w-2,5), (w-1,5)]
-                if s1: l_strat= in_stripe_x_s1[1]
-                else: l_strat = in_stripe_x_s2[1]
+                if s1: l_strat= in_stripe_x_s1[2]
+                else: l_strat = in_stripe_x_s2[2]
                 for i in range(len(l_strat)):
                     #if (pos[(x,y)][0], (-pos[(x,y)][1]+stripe_y)%6) == tile_12[i]:
                     if (pos[(x,y)][0], -pos[(x,y)][1]-stripe_y%6) == tile[i]:
                         #if pos[(x,y)][0]+strat[i][0]<h:
-                        pos[(x,y)] = (pos[(x,y)][0]+l_strat[i][0], pos[(x,y)][1]+l_strat[i][1])
-                        break
+                        if l_strat[i]!=(None,None):
+                            pos[(x,y)] = (pos[(x,y)][0]+l_strat[i][0], pos[(x,y)][1]+l_strat[i][1])
+                            break
                 continue
             else:
                 print("else")
                 x0 = pos[(x,y)][0]//3*3
                 y0 = -((-pos[(x,y)][1]-stripe_y)//3*3)-stripe_y
                 tile = [(x0, y0), (x0+1,y0), (x0+2,y0), (x0, y0-1), (x0+1,y0-1), (x0+2,y0-1), (x0, y0-2), (x0+1,y0-2), (x0+2,y0-2)]
-                if s1: l_strat= intile_s1[1]
-                else: l_strat = intile_s2[1]
-                for i in range(len(l_strat)):
-                    if pos[(x,y)] == tile[i]:
-                        pos[(x,y)] = (pos[(x,y)][0]+l_strat[i][0], pos[(x,y)][1]+l_strat[i][1])
+                if s1: l_strat2= intile_s1[1]
+                else: l_strat2 = intile_s2[1]
+                for i in range(len(l_strat2)):
+                    if pos[(x,y)] == tile[i] and l_strat2[i]!=(None,None):
+                        pos[(x,y)] = (pos[(x,y)][0]+l_strat2[i][0], pos[(x,y)][1]+l_strat2[i][1])
                         break
         
         elif in_stripe_x:
-            if pos[(x,y)][1]==0 or pos[(x,y)][1]==-1:
+            print(pos[(x,y)])
+            if (pos[(x,y)][1]==0 or pos[(x,y)][1]==-1) and pos[(x,y)][0]<w-stripe_x:
+                print("1")
                 tile = [(0, 0), (1,0), (2,0), (3, 0),(4, 0), (5,0),
                         (0, -1), (1,-1), (2,-1), (3, -1),(4, -1), (5,-1)]
-                if s1: l_strat= in_stripe_y_s1[1]
-                else: l_strat = in_stripe_y_s2[1]
+                if s1: l_strat= in_stripe_y_s1[3]
+                else: l_strat = in_stripe_y_s2[3]
                 for i in range(len(l_strat)):
                     if (pos[(x,y)][0]%6, pos[(x,y)][1]) == tile[i]:
-                        print((pos[(x,y)][0]%6, pos[(x,y)][1]))
                         if l_strat[i]!=(None,None):
                             if pos[(x,y)][0]+l_strat[i][0]<h:
                                 pos[(x,y)] = (pos[(x,y)][0]+l_strat[i][0], pos[(x,y)][1]+l_strat[i][1])
-                            break
+                                break
             elif pos[(x,y)][0]==w-2 or pos[(x,y)][0]==w-1:
-                #if pos[(x,y)][1]==0 or pos[(x,y)][1]==-1: continue
+                print("2")
+                print(strat)
                 for i in range(len(strat)):
-                    #if (pos[(x,y)][0], (-pos[(x,y)][1]+stripe_y)%6) == tile_12[i]:
                     if (pos[(x,y)][0], -pos[(x,y)][1]-stripe_y%6) == tile_12[i]:
-                        #if pos[(x,y)][0]+strat[i][0]<h:
-                        pos[(x,y)] = (pos[(x,y)][0]+strat[i][0], pos[(x,y)][1]+strat[i][1])
-                        break
+                        if strat[i]!=(None,None):
+                            pos[(x,y)] = (pos[(x,y)][0]+strat[i][0], pos[(x,y)][1]+strat[i][1])
+                            break
             #elif pos[(x,y)][1]==0 or pos[(x,y)][1]==-1: continue
             else:
-                
+                print("3")
                 x0 = pos[(x,y)][0]//3*3
                 y0 = -((-pos[(x,y)][1]-stripe_y)//3*3)-stripe_y
                 tile = [(x0, y0), (x0+1,y0), (x0+2,y0), (x0, y0-1), (x0+1,y0-1), (x0+2,y0-1), (x0, y0-2), (x0+1,y0-2), (x0+2,y0-2)]
-                if s1: l_strat= intile_s1[1]
-                else: l_strat = intile_s2[1]
+                if s1: l_strat2= intile_s1[1]
+                else: l_strat2 = intile_s2[1]
                 for i in range(len(l_strat)):
-                    if pos[(x,y)] == tile[i]:
-                        pos[(x,y)] = (pos[(x,y)][0]+l_strat[i][0], pos[(x,y)][1]+l_strat[i][1])
+                    if pos[(x,y)] == tile[i] and l_strat2[i]!=(None,None):
+                        pos[(x,y)] = (pos[(x,y)][0]+l_strat2[i][0], pos[(x,y)][1]+l_strat2[i][1])
                         break
 
 
         elif stripe_tile_x or stripe_tile_y:  
             if pos[(x,y)] in tile_12:
-                for i in range(len(strat)):
-                    if pos[(x,y)] == tile_12[i]:
-                        pos[(x,y)] = (pos[(x,y)][0]+strat[i][0], pos[(x,y)][1]+strat[i][1])
-                        break
-            elif pos[(x,y)][1]>=-(stripe_y-1):
+                print(tile_12)
+                if stripe_tile_y or stripe_tile_x:
+                    print("1")
+                    for i in range(len(strat)):
+                        if pos[(x,y)] == tile_12[i] and strat[i]!=(None,None):
+                            pos[(x,y)] = (pos[(x,y)][0]+strat[i][0], pos[(x,y)][1]+strat[i][1])
+                            break
+            elif pos[(x,y)][1]>=-(stripe_y-1) and pos[(x,y)][0]<w-stripe_x:
+                print("2")
                 if stripe_y==1: continue
                 tile = [(0, 0), (1,0), (2,0), (3, 0),(4, 0), (5,0),
                         (0, -1), (1,-1), (2,-1), (3, -1),(4, -1), (5,-1)]
-                if s1: l_strat= in_stripe_y_s1[1]
-                else: l_strat = in_stripe_y_s2[1]
+                if s1: l_strat= in_stripe_y_s1[3]
+                else: l_strat = in_stripe_y_s2[3]
                 for i in range(len(l_strat)):
                     if (pos[(x,y)][0]%6, pos[(x,y)][1]) == tile[i]:
-                        print((pos[(x,y)][0]%6, pos[(x,y)][1]))
                         if l_strat[i]!=(None,None):
                             if pos[(x,y)][0]+l_strat[i][0]<h:
                                 pos[(x,y)] = (pos[(x,y)][0]+l_strat[i][0], pos[(x,y)][1]+l_strat[i][1])
                             break
             elif pos[(x,y)][0]>=w-stripe_x:
+                print("3")
                 if stripe_x==1: continue
                 tile = [(w-2,0), (w-1,0), (w-2,1), (w-1,1), (w-2,2), (w-1,2),
                         (w-2,3), (w-1,3), (w-2,4), (w-1,4), (w-2,5), (w-1,5)]
-                if s1: l_strat= in_stripe_x_s1[1]
-                else: l_strat = in_stripe_x_s2[1]
-                for i in range(len(l_strat)):
+                if s1: l_strat2= in_stripe_x_s1[2]
+                else: l_strat2 = in_stripe_x_s2[2]
+                for i in range(len(l_strat2)):
                     #if (pos[(x,y)][0], (-pos[(x,y)][1]+stripe_y)%6) == tile_12[i]:
                     if (pos[(x,y)][0], -pos[(x,y)][1]-stripe_y%6) == tile[i]:
                         #if pos[(x,y)][0]+strat[i][0]<h:
-                        pos[(x,y)] = (pos[(x,y)][0]+l_strat[i][0], pos[(x,y)][1]+l_strat[i][1])
-                        break
+                        if l_strat2[i]!=(None,None):
+                            pos[(x,y)] = (pos[(x,y)][0]+l_strat2[i][0], pos[(x,y)][1]+l_strat2[i][1])
+                            break
                 continue
             #elif pos[(x,y)][1]>=-(stripe_y-1) or pos[(x,y)][0]>=h-stripe_x: continue
             else:
+                print("4")
                 x0 = pos[(x,y)][0]//3*3
                 y0 = -((-pos[(x,y)][1]-stripe_y)//3*3)-stripe_y
                 tile = [(x0, y0), (x0+1,y0), (x0+2,y0), (x0, y0-1), (x0+1,y0-1), (x0+2,y0-1), (x0, y0-2), (x0+1,y0-2), (x0+2,y0-2)]
-                if s1: l_strat= intile_s1[1]
-                else: l_strat = intile_s2[1]
-                for i in range(len(l_strat)):
-                    if pos[(x,y)] == tile[i]:
-                        pos[(x,y)] = (pos[(x,y)][0]+l_strat[i][0], pos[(x,y)][1]+l_strat[i][1])
+                if s1: l_strat3= intile_s1[1]
+                else: l_strat3 = intile_s2[1]
+                for i in range(len(l_strat3)):
+                    if pos[(x,y)] == tile[i] and l_strat3[i]!=(None,None):
+                        pos[(x,y)] = (pos[(x,y)][0]+l_strat3[i][0], pos[(x,y)][1]+l_strat3[i][1])
                         break
 
         elif bet_tiles_y or bet_tiles_x:
             if pos[(x,y)] in tile_18:
                 for i in range(len(strat)):
-                    if pos[(x,y)] == tile_18[i]:
+                    if pos[(x,y)] == tile_18[i] and strat[i]!=(None,None):
                         pos[(x,y)] = (pos[(x,y)][0]+strat[i][0], pos[(x,y)][1]+strat[i][1])
                         break
             elif pos[(x,y)][1]>=-(stripe_y-1):
                 if stripe_y==1: continue
                 tile = [(0, 0), (1,0), (2,0), (3, 0),(4, 0), (5,0),
                         (0, -1), (1,-1), (2,-1), (3, -1),(4, -1), (5,-1)]
-                if s1: l_strat= in_stripe_y_s1[1]
-                else: l_strat = in_stripe_y_s2[1]
-                for i in range(len(l_strat)):
+                if s1: l_strat2= in_stripe_y_s1[3]
+                else: l_strat2 = in_stripe_y_s2[3]
+                for i in range(len(l_strat2)):
                     if (pos[(x,y)][0]%6, pos[(x,y)][1]) == tile[i]:
-                        print((pos[(x,y)][0]%6, pos[(x,y)][1]))
-                        if l_strat[i]!=(None,None):
-                            if pos[(x,y)][0]+l_strat[i][0]<h:
-                                pos[(x,y)] = (pos[(x,y)][0]+l_strat[i][0], pos[(x,y)][1]+l_strat[i][1])
+                        
+                        if l_strat2[i]!=(None,None):
+                            if pos[(x,y)][0]+l_strat2[i][0]<h:
+                                pos[(x,y)] = (pos[(x,y)][0]+l_strat2[i][0], pos[(x,y)][1]+l_strat2[i][1])
                             break
             elif pos[(x,y)][0]>=w-stripe_x:
                 if stripe_x==1: continue
                 tile = [(w-2,0), (w-1,0), (w-2,1), (w-1,1), (w-2,2), (w-1,2),
                         (w-2,3), (w-1,3), (w-2,4), (w-1,4), (w-2,5), (w-1,5)]
-                if s1: l_strat= in_stripe_x_s1[1]
-                else: l_strat = in_stripe_x_s2[1]
-                for i in range(len(strat)):
+                if s1: l_strat3= in_stripe_x_s1[2]
+                else: l_strat3 = in_stripe_x_s2[2]
+                for i in range(len(l_strat3)):
                     #if (pos[(x,y)][0], (-pos[(x,y)][1]+stripe_y)%6) == tile_12[i]:
                     if (pos[(x,y)][0], -pos[(x,y)][1]-stripe_y%6) == tile[i]:
+                        if l_strat3[i]!=(None,None):
                         #if pos[(x,y)][0]+strat[i][0]<h:
-                        pos[(x,y)] = (pos[(x,y)][0]+l_strat[i][0], pos[(x,y)][1]+l_strat[i][1])
-                        break
+                            pos[(x,y)] = (pos[(x,y)][0]+l_strat3[i][0], pos[(x,y)][1]+l_strat3[i][1])
+                            break
                 continue
             #elif pos[(x,y)][1]>=-(stripe_y-1) or pos[(x,y)][0]>=h-stripe_x: continue
             else:
                 x0 = pos[(x,y)][0]//3*3
                 y0 = -((-pos[(x,y)][1]-stripe_y)//3*3)-stripe_y
                 tile = [(x0, y0), (x0+1,y0), (x0+2,y0), (x0, y0-1), (x0+1,y0-1), (x0+2,y0-1), (x0, y0-2), (x0+1,y0-2), (x0+2,y0-2)]
-                if s1: l_strat= intile_s1[1]
-                else: l_strat = intile_s2[1]
-                for i in range(len(l_strat)):
-                    if pos[(x,y)] == tile[i]:
-                        pos[(x,y)] = (pos[(x,y)][0]+l_strat[i][0], pos[(x,y)][1]+l_strat[i][1])
+                if s1: l_strat4= intile_s1[1]
+                else: l_strat4 = intile_s2[1]
+                for i in range(len(l_strat4)):
+                    if pos[(x,y)] == tile[i] and l_strat4[i]!=(None,None):
+                        pos[(x,y)] = (pos[(x,y)][0]+l_strat4[i][0], pos[(x,y)][1]+l_strat4[i][1])
                         break
 
         elif in_tile:
@@ -962,12 +1089,11 @@ def move_guards_t (G, G_guards, pos, edge, h, w):
                 print("c1")
                 tile = [(0, 0), (1,0), (2,0), (3, 0), (4, 0), (5,0),
                         (0,-1), (1,-1), (2,-1), (3,-1), (4,-1), (5,-1)]
-                if s1: l_strat= in_stripe_y_s1[1]
-                else: l_strat = in_stripe_y_s2[1]
-                #print((pos[(x,y)][0]%6, pos[(x,y)][1]))
+                if s1: l_strat= in_stripe_y_s1[3]
+                else: l_strat = in_stripe_y_s2[3]
+               
                
                 for i in range(len(l_strat)):
-                    
                     if (pos[(x,y)][0]%6, pos[(x,y)][1]) == tile[i]:
                         print("here")
                         if l_strat[i]!=(None,None):
@@ -975,20 +1101,22 @@ def move_guards_t (G, G_guards, pos, edge, h, w):
                                 pos[(x,y)] = (pos[(x,y)][0]+l_strat[i][0], pos[(x,y)][1]+l_strat[i][1])
                                 break
             elif pos[(x,y)][0]>=w-stripe_x:
-                print(pos[(x,y)])
+               
                 #print(h, stripe_x, stripe_y)
                 if stripe_x==1: continue
                 print("c2")
                 tile = [(w-2,0), (w-1,0), (w-2,1), (w-1,1), (w-2,2), (w-1,2),
                         (w-2,3), (w-1,3), (w-2,4), (w-1,4), (w-2,5), (w-1,5)]
-                if s1: l_strat= in_stripe_x_s1[1]
-                else: l_strat = in_stripe_x_s2[1]
-                for i in range(len(l_strat)):
+                if s1: l_strat2= in_stripe_x_s1[2]
+                else: l_strat2 = in_stripe_x_s2[2]
+                
+                for i in range(len(l_strat2)):
                     #if (pos[(x,y)][0], (-pos[(x,y)][1]+stripe_y)%6) == tile_12[i]:
                     if (pos[(x,y)][0], -pos[(x,y)][1]-stripe_y%6) == tile[i]:
                         #if pos[(x,y)][0]+strat[i][0]<h:
-                        pos[(x,y)] = (pos[(x,y)][0]+l_strat[i][0], pos[(x,y)][1]+l_strat[i][1])
-                        break
+                        if l_strat2[i]!=(None,None):
+                            pos[(x,y)] = (pos[(x,y)][0]+l_strat2[i][0], pos[(x,y)][1]+l_strat2[i][1])
+                            break
               
             #if pos[(x,y)][1]>=-(stripe_y-1) or pos[(x,y)][0]>=h-stripe_x: continue
             else:
@@ -997,7 +1125,7 @@ def move_guards_t (G, G_guards, pos, edge, h, w):
                 y0 = -((-pos[(x,y)][1]-stripe_y)//3*3)-stripe_y
                 tile = [(x0, y0), (x0+1,y0), (x0+2,y0), (x0, y0-1), (x0+1,y0-1), (x0+2,y0-1), (x0, y0-2), (x0+1,y0-2), (x0+2,y0-2)]
                 for i in range(len(strat)):
-                    if pos[(x,y)] == tile[i]:
+                    if pos[(x,y)] == tile[i] and strat[i]!=(None,None):
                         pos[(x,y)] = (pos[(x,y)][0]+strat[i][0], pos[(x,y)][1]+strat[i][1])
                         break
 
@@ -1017,7 +1145,20 @@ def move_guards_s (G, G_guards, pos, edge, h, w):
     else:
         pos1 = pos_nodes[(edge[1][0],edge[1][1])]
         pos2 = pos_nodes[(edge[0][0],edge[0][1])]
-    cycle = hamilton(G, edge)
+    
+    if pos1[1]!=pos2[1]:
+        print("vertical")
+        G1 = nx.grid_2d_graph(w, h, periodic=False)
+        edge1=((edge[0][1], w-edge[0][0]-1), (edge[1][1], w-edge[1][0]-1))
+        cycle1 = hamilton_v2(G1, edge1)
+        cycle=[]
+        for (x,y) in cycle1:
+            cycle.append((w-1-y, x))
+    else:
+        print("orizontal")
+        cycle = hamilton_v2(G, edge)
+    
+    
     pos_cycle = []
     for node in cycle:
         pos_cycle.append(pos_nodes[node])
@@ -1085,14 +1226,16 @@ def hamilton_v2(G, edge):
     while F:
         graph,path = F.pop()
         confs = []
-        neighbors = (node for node in graph.neighbors(path[-1]) 
+        neighbors = (node for node in graph.neighbors(path[-1])
                      if node != path[-1]) #exclude self loops
+        
         for neighbor in neighbors:
             conf_p = path[:]
             conf_p.append(neighbor)
             conf_g = nx.Graph(graph)
             conf_g.remove_node(path[-1])
             confs.append((conf_g,conf_p))
+        
         for g,p in confs:
             if len(p)==n:
                 i1 = p.index(edge[0])

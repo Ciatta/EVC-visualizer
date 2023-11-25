@@ -26,7 +26,10 @@
     </div>
         
     <div class="container  text-center  my-5">
-        <img class="vh-100 img"  src="{{ url_for('static', filename='anim2.gif') }}" alt="Plot">
+        <img class="vh-100 img" id="gif-1" src="{{ url_for('static', filename='anim2.gif') }}" alt="Plot">
+        <button onclick="document.getElementById('gif-1').src='static/anim2.gif'">
+            Replay</button>
+    </div>
     </div>
     
 </body>
