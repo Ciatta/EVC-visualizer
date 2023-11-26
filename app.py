@@ -12,7 +12,6 @@ def result():
     w = int(request.form['width'])
     h = int(request.form['height'])
     shape = request.form['selected_shape']
-    print(shape, h, w)
     if shape == "hexagon" and (h%2!=0 or h<4 or w<2):
         m = "For hexagonal grid the height needs to be even and at least 4 and the width at least 2! Try again."
         return render_template('index.html', display='inline-block', message=m)

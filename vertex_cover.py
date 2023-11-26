@@ -78,7 +78,7 @@ def put_guards_s(G, h, w):
 
 
 
-def move_guards(shape, G, G_guards, pos, edge, h, w):
+def move_guards(shape, G, G_guards, G_edges, pos, edge, h, w):
     edge = edge[1:-1].split(",")
     x = int(edge[0]); y=int(edge[1])
 
@@ -86,14 +86,15 @@ def move_guards(shape, G, G_guards, pos, edge, h, w):
     x_n=list(labels.keys())[x-1]; y_n=list(labels.keys())[y-1]; 
     #G_guards.add_edge(x_n, y_n)
 
-    if not G.has_edge(x_n, y_n): return G_guards, pos, False
+    if not G.has_edge(x_n, y_n): return G_guards, G_edges, pos, False
     edge = (x_n, y_n)
-    if (shape == shapes.hexagon): return move_guards_h(G, G_guards, pos, edge, h, w)
-    elif (shape == shapes.triangle): return move_guards_t(G, G_guards, pos, edge, h, w)
-    elif (shape == shapes.octagon): return move_guards_o(G, G_guards, pos, edge, h, w)
-    elif (shape == shapes.square): return move_guards_s(G, G_guards, pos, edge, h, w)
+    if (shape == shapes.hexagon): return move_guards_h(G, G_guards, G_edges, pos, edge, h, w)
+    elif (shape == shapes.triangle): return move_guards_t(G, G_guards, G_edges, pos, edge, h, w)
+    elif (shape == shapes.octagon): return move_guards_o(G, G_guards, G_edges, pos, edge, h, w)
+    elif (shape == shapes.square): return move_guards_s(G, G_guards, G_edges, pos, edge, h, w)
 
-def move_guards_h(G, G_guards, pos, edge, h, w):
+def move_guards_h(G, G_guards, G_edges, pos, edge, h, w):
+    G_edges.add_edge(edge[0], edge[1])
     pos_nodes = get_pos(G)
     if pos_nodes[edge[0]] in list(pos.values()):
         pos1 = pos_nodes[(edge[0][0],edge[0][1])]
@@ -457,13 +458,14 @@ def move_guards_h(G, G_guards, pos, edge, h, w):
                         pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]+1)
                         print("b46")
             pos[(x,y)]
-    return G_guards, pos, True
+    return G_guards, G_edges, pos, True
 
 s1 = True
-def move_guards_t (G, G_guards, pos, edge, h, w):
+def move_guards_t (G, G_guards, G_edges, pos, edge, h, w):
     global s1
+    G_edges.add_edge(edge[0], edge[1])
     pos_nodes = get_pos(G)
-  
+
     intile_s1 ={1: [(1,0), (None,None), (0,0), (0,0), (1,0), (None,None), (None,None), (-1,0), (-1,0)],
                 2: [(0,-1), (None,None), (0,0), (1,1), (-1,-1), (None,None), (None,None), (0,0), (0,1)],
                 3: [(0,-1), (None,None), (-1,0), (0,-1), (1,1), (None,None), (None,None), (0,0), (0,1)],
@@ -629,7 +631,6 @@ def move_guards_t (G, G_guards, pos, edge, h, w):
                     6:[(0,-1), (-1,0), (0,-1), (None,None), (1,0), (0,1),
                        (0,0), (0,-1), (0,0), (None,None), (0,0), (0,0)]}
     
-
     easy_case = False
     if pos_nodes[edge[0]] in list(pos.values()):
         pos1 = pos_nodes[(edge[0][0],edge[0][1])]
@@ -645,8 +646,7 @@ def move_guards_t (G, G_guards, pos, edge, h, w):
     tiles_y = h//3
     tiles_x = w//3
    
-    
-      
+    #fing where the attacked edge is 
     in_stripe_y = False
     stripe_tile_y = False
     bet_tiles_y = False
@@ -699,12 +699,8 @@ def move_guards_t (G, G_guards, pos, edge, h, w):
                 print("------------inside tile------------")
                 break
 
-
-
-    pos1_t = (pos1[0]%3, ((-pos1[1]+stripe_y)%3))
-    pos2_t = (pos2[0]%3, ((-pos2[1]+stripe_y)%3))
+    #chose the correct strategy according to the attacked edge
     dir_e = (pos2[0]-pos1[0], pos2[1]-pos1[1])
-
     strat = []
     if h_2:
         x0 = pos1[0]//3*3
@@ -725,6 +721,7 @@ def move_guards_t (G, G_guards, pos, edge, h, w):
             for l in list(stripe_h2_s2.values()):
                 if l[i_t]==dir_e:
                     strat = l
+
     elif w_2:
         x0 = pos1[0]//3*3
         y0 = -((-pos1[1]-stripe_y)//3*3)-stripe_y
@@ -744,6 +741,7 @@ def move_guards_t (G, G_guards, pos, edge, h, w):
             for l in list(stripe_w2_s2.values()):
                 if l[i_t]==dir_e:
                     strat = l
+
     elif in_stripe_y:
         x0 = pos1[0]//3*3
         y0 = -((-pos1[1]-stripe_y)//3*3)-stripe_y
@@ -800,7 +798,6 @@ def move_guards_t (G, G_guards, pos, edge, h, w):
                        (x0-3, y0-1), (x0-2,y0-1), (x0-1,y0-1), (x0, y0-1),
                        (x0-3, y0-2), (x0-2,y0-2), (x0-1,y0-2), (x0, y0-2)]
         i_t = tile_12.index(pos1)
-
         if s1:
             print("s1")
             for l in list(stripe_tile_x_s1.values()):
@@ -822,7 +819,6 @@ def move_guards_t (G, G_guards, pos, edge, h, w):
             tile_12 = [(x0, 0-stripe_y+1), (x0+1,0-stripe_y+1), (x0+2,0-stripe_y+1), (x0, -1-stripe_y+1), (x0+1,-1-stripe_y+1), (x0+2,-1-stripe_y+1),
                        (x0, -2-stripe_y+1), (x0+1,-2-stripe_y+1), (x0+2,-2-stripe_y+1), (x0, -3-stripe_y+1), (x0+1,-3-stripe_y+1), (x0+2,-3-stripe_y+1)]
         i_t = tile_12.index(pos1)
-
         if s1:
             print("s1")
             for l in list(stripe_tile_y_s1.values()):
@@ -844,7 +840,6 @@ def move_guards_t (G, G_guards, pos, edge, h, w):
             tile_18 = [(x0, y0+3), (x0+1,y0+3), (x0+2,y0+3), (x0, y0+2), (x0+1,y0+2), (x0+2,y0+2), (x0, y0+1), (x0+1,y0+1), (x0+2,y0+1),
                     (x0, y0), (x0+1,y0), (x0+2,y0), (x0, y0-1), (x0+1,y0-1), (x0+2,y0-1), (x0, y0-2), (x0+1,y0-2), (x0+2,y0-2)]
         i_t = tile_18.index(pos1)
-
         if s1:
             print("s1")
             for l in list(bet_tiles_y_s1.values()):
@@ -869,7 +864,6 @@ def move_guards_t (G, G_guards, pos, edge, h, w):
                        (x0-3, y0-1),(x0-2, y0-1), (x0-1, y0-1), (x0,y0-1), (x0+1, y0-1), (x0+2, y0-1),
                        (x0-3, y0-2),(x0-2, y0-2), (x0-1, y0-2), (x0,y0-2), (x0+1, y0-2), (x0+2, y0-2)]
         i_t = tile_18.index(pos1)
-
         if s1:
             print("s1")
             for l in list(bet_tiles_x_s1.values()):
@@ -898,7 +892,7 @@ def move_guards_t (G, G_guards, pos, edge, h, w):
                     strat = l
 
 #-------------------------------------------------------------------------------------------
-
+    #move each guard according to the correct strategy
     for x,y in G_guards.nodes():
         print("-----------------------------")
         print(pos[(x,y)])
@@ -909,6 +903,7 @@ def move_guards_t (G, G_guards, pos, edge, h, w):
                 if (pos[(x,y)][0]%6, pos[(x,y)][1]) == tile_12[i]:
                     pos[(x,y)] = (pos[(x,y)][0]+strat[i][0], pos[(x,y)][1]+strat[i][1])
                     break
+
         elif w_2:
             print(tile_12)
             for i in range(len(strat)):
@@ -916,9 +911,11 @@ def move_guards_t (G, G_guards, pos, edge, h, w):
                         if strat[i]!=(None,None):
                             pos[(x,y)] = (pos[(x,y)][0]+strat[i][0], pos[(x,y)][1]+strat[i][1])
                             break
+
         elif easy_case:
             if pos[(x,y)]==pos1: pos[(x,y)]=pos2
             elif pos[(x,y)]==pos2: pos[(x,y)]=pos1
+
         elif in_stripe_y:
             if (pos[(x,y)][1]==0 or pos[(x,y)][1]==-1) and pos[(x,y)][0]<w-stripe_x:
                 print("0 o -1")
@@ -933,9 +930,7 @@ def move_guards_t (G, G_guards, pos, edge, h, w):
                 if s1: l_strat= in_stripe_x_s1[2]
                 else: l_strat = in_stripe_x_s2[2]
                 for i in range(len(l_strat)):
-                    #if (pos[(x,y)][0], (-pos[(x,y)][1]+stripe_y)%6) == tile_12[i]:
                     if (pos[(x,y)][0], -pos[(x,y)][1]-stripe_y%6) == tile[i]:
-                        #if pos[(x,y)][0]+strat[i][0]<h:
                         if l_strat[i]!=(None,None):
                             pos[(x,y)] = (pos[(x,y)][0]+l_strat[i][0], pos[(x,y)][1]+l_strat[i][1])
                             break
@@ -974,7 +969,6 @@ def move_guards_t (G, G_guards, pos, edge, h, w):
                         if strat[i]!=(None,None):
                             pos[(x,y)] = (pos[(x,y)][0]+strat[i][0], pos[(x,y)][1]+strat[i][1])
                             break
-            #elif pos[(x,y)][1]==0 or pos[(x,y)][1]==-1: continue
             else:
                 print("3")
                 x0 = pos[(x,y)][0]//3*3
@@ -986,7 +980,6 @@ def move_guards_t (G, G_guards, pos, edge, h, w):
                     if pos[(x,y)] == tile[i] and l_strat2[i]!=(None,None):
                         pos[(x,y)] = (pos[(x,y)][0]+l_strat2[i][0], pos[(x,y)][1]+l_strat2[i][1])
                         break
-
 
         elif stripe_tile_x or stripe_tile_y:  
             if pos[(x,y)] in tile_12:
@@ -1018,14 +1011,11 @@ def move_guards_t (G, G_guards, pos, edge, h, w):
                 if s1: l_strat2= in_stripe_x_s1[2]
                 else: l_strat2 = in_stripe_x_s2[2]
                 for i in range(len(l_strat2)):
-                    #if (pos[(x,y)][0], (-pos[(x,y)][1]+stripe_y)%6) == tile_12[i]:
                     if (pos[(x,y)][0], -pos[(x,y)][1]-stripe_y%6) == tile[i]:
-                        #if pos[(x,y)][0]+strat[i][0]<h:
                         if l_strat2[i]!=(None,None):
                             pos[(x,y)] = (pos[(x,y)][0]+l_strat2[i][0], pos[(x,y)][1]+l_strat2[i][1])
                             break
                 continue
-            #elif pos[(x,y)][1]>=-(stripe_y-1) or pos[(x,y)][0]>=h-stripe_x: continue
             else:
                 print("4")
                 x0 = pos[(x,y)][0]//3*3
@@ -1064,14 +1054,11 @@ def move_guards_t (G, G_guards, pos, edge, h, w):
                 if s1: l_strat3= in_stripe_x_s1[2]
                 else: l_strat3 = in_stripe_x_s2[2]
                 for i in range(len(l_strat3)):
-                    #if (pos[(x,y)][0], (-pos[(x,y)][1]+stripe_y)%6) == tile_12[i]:
                     if (pos[(x,y)][0], -pos[(x,y)][1]-stripe_y%6) == tile[i]:
                         if l_strat3[i]!=(None,None):
-                        #if pos[(x,y)][0]+strat[i][0]<h:
                             pos[(x,y)] = (pos[(x,y)][0]+l_strat3[i][0], pos[(x,y)][1]+l_strat3[i][1])
                             break
                 continue
-            #elif pos[(x,y)][1]>=-(stripe_y-1) or pos[(x,y)][0]>=h-stripe_x: continue
             else:
                 x0 = pos[(x,y)][0]//3*3
                 y0 = -((-pos[(x,y)][1]-stripe_y)//3*3)-stripe_y
@@ -1091,34 +1078,24 @@ def move_guards_t (G, G_guards, pos, edge, h, w):
                         (0,-1), (1,-1), (2,-1), (3,-1), (4,-1), (5,-1)]
                 if s1: l_strat= in_stripe_y_s1[3]
                 else: l_strat = in_stripe_y_s2[3]
-               
-               
                 for i in range(len(l_strat)):
                     if (pos[(x,y)][0]%6, pos[(x,y)][1]) == tile[i]:
-                        print("here")
                         if l_strat[i]!=(None,None):
                             if pos[(x,y)][0]+l_strat[i][0]<w:
                                 pos[(x,y)] = (pos[(x,y)][0]+l_strat[i][0], pos[(x,y)][1]+l_strat[i][1])
                                 break
             elif pos[(x,y)][0]>=w-stripe_x:
-               
-                #print(h, stripe_x, stripe_y)
                 if stripe_x==1: continue
                 print("c2")
                 tile = [(w-2,0), (w-1,0), (w-2,1), (w-1,1), (w-2,2), (w-1,2),
                         (w-2,3), (w-1,3), (w-2,4), (w-1,4), (w-2,5), (w-1,5)]
                 if s1: l_strat2= in_stripe_x_s1[2]
                 else: l_strat2 = in_stripe_x_s2[2]
-                
                 for i in range(len(l_strat2)):
-                    #if (pos[(x,y)][0], (-pos[(x,y)][1]+stripe_y)%6) == tile_12[i]:
                     if (pos[(x,y)][0], -pos[(x,y)][1]-stripe_y%6) == tile[i]:
-                        #if pos[(x,y)][0]+strat[i][0]<h:
                         if l_strat2[i]!=(None,None):
                             pos[(x,y)] = (pos[(x,y)][0]+l_strat2[i][0], pos[(x,y)][1]+l_strat2[i][1])
                             break
-              
-            #if pos[(x,y)][1]>=-(stripe_y-1) or pos[(x,y)][0]>=h-stripe_x: continue
             else:
                 print("c3")
                 x0 = pos[(x,y)][0]//3*3
@@ -1130,14 +1107,11 @@ def move_guards_t (G, G_guards, pos, edge, h, w):
                         break
 
     if not easy_case: s1 = not s1
-   
-    return G_guards, pos, True
+    return G_guards, G_edges, pos, True
                                    
 
-def move_guards_o (G, G_guards, pos, edge, h, w):
-    return []
-
-def move_guards_s (G, G_guards, pos, edge, h, w):
+def move_guards_o (G, G_guards,  G_edges, pos, edge, h, w):
+    G_edges.add_edge(edge[0], edge[1])
     pos_nodes = get_pos(G)
     if pos_nodes[edge[0]] in list(pos.values()):
         pos1 = pos_nodes[(edge[0][0],edge[0][1])]
@@ -1145,20 +1119,182 @@ def move_guards_s (G, G_guards, pos, edge, h, w):
     else:
         pos1 = pos_nodes[(edge[1][0],edge[1][1])]
         pos2 = pos_nodes[(edge[0][0],edge[0][1])]
+
+    easy_case = (pos_nodes[edge[0]] in list(pos.values()) and pos_nodes[edge[1]] in list(pos.values())) 
+    case1 = (pos1[0]%2==0 and (pos2[1]==pos1[1]+1 or pos2[1]==pos1[1]-1))  
+    case2 = (pos1[0]%2==0 and pos2[1]==pos1[1])   
+    case3 = (pos1[0]%2==1 and pos2[0]==pos1[0])   
+   
+    casea = ((pos2[0],0) in list(pos.values()))
+    caseb = ((pos2[0],-1) in list(pos.values()))
     
+    for x,y in G_guards.nodes():
+        dir_x = pos2[0]-pos1[0]
+        if easy_case:
+            if pos[(x,y)]==pos1: pos[(x,y)]=pos2
+            elif pos[(x,y)]==pos2: pos[(x,y)]=pos1
+
+        elif case1:
+            if caseb:
+                if pos[(x,y)] == pos1:
+                    pos[(x,y)] = pos2
+                elif pos[(x,y)][0]==pos1[0] and pos[(x,y)][1]<pos1[1]:
+                    pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]+1)
+                elif pos[(x,y)][0]==pos1[0] and pos[(x,y)][1]>pos1[1]:
+                    continue
+                elif pos[(x,y)][0]==pos2[0] and pos[(x,y)][1]<pos2[1]:
+                    if pos[(x,y)][1]==-h+1: pos[(x,y)] = (pos[(x,y)][0]-dir_x, pos[(x,y)][1])
+                    else: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]-1)
+                elif pos[(x,y)][0]==pos2[0] and pos[(x,y)][1]>pos2[1]:
+                    pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]+1)
+            elif casea:
+                if pos[(x,y)] == pos1:
+                    print("guard")
+                    pos[(x,y)] = pos2
+                elif pos[(x,y)][0]==pos1[0] and pos[(x,y)][1]<pos1[1]:
+                    print("SA")
+                elif pos[(x,y)][0]==pos1[0] and pos[(x,y)][1]>pos1[1]:
+                    print("SB")
+                    pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]-1)
+                elif pos[(x,y)][0]==pos2[0] and pos[(x,y)][1]<pos2[1]:
+                    print("SC")
+                    pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]-1)
+                elif pos[(x,y)][0]==pos2[0] and pos[(x,y)][1]>pos2[1]:
+                    print("SD")
+                    if pos[x,y][1]==0: pos[(x,y)] = (pos[(x,y)][0]-dir_x, pos[(x,y)][1])
+                    else: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]+1)
+                    print("SD")
+                else:
+                    print("else")
+        elif case2:
+            print("case2")
+            if caseb:
+                if pos[(x,y)] == pos1: pos[(x,y)] = pos2
+                elif pos[(x,y)][0]==pos1[0] and pos[(x,y)][1]<pos1[1]:
+                    pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]+1)
+                    print("SA")
+                elif pos[(x,y)][0]==pos1[0] and pos[(x,y)][1]>pos1[1]:
+                    print("SB")
+                elif pos[(x,y)][0]==pos2[0] and pos[(x,y)][1]<pos2[1]:
+                    if pos[(x,y)][1]==-h+1:
+                        pos[(x,y)] = (pos[(x,y)][0]-dir_x, pos[(x,y)][1])
+                    else: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]-1)
+                    print("SC")
+                elif pos[(x,y)][0]==pos2[0] and pos[(x,y)][1]>pos2[1]:
+                    pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]+1)
+                    print("SD")
+                else:
+                    print("else")
+            elif casea:
+                if pos[(x,y)] == pos1: pos[(x,y)] = pos2
+                elif pos[(x,y)][0]==pos1[0] and pos[(x,y)][1]<pos1[1]:
+                    print("SA")
+                elif pos[(x,y)][0]==pos1[0] and pos[(x,y)][1]>pos1[1]:
+                    pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]-1)
+                    print("SB")
+                elif pos[(x,y)][0]==pos2[0] and pos[(x,y)][1]<pos2[1]:
+                    pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]-1)
+                    print("SC")
+                elif pos[(x,y)][0]==pos2[0] and pos[(x,y)][1]>pos2[1]:
+                    if pos[(x,y)][1]==0:
+                        pos[(x,y)] = (pos[(x,y)][0]-dir_x, pos[(x,y)][1])
+                    else: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]+1)
+                    print("SD")
+                else:
+                    print("else")
+        
+        elif case3:
+            print("case3")
+            if caseb:
+                #guard
+                if pos[(x,y)] == pos1: pos[(x,y)] = pos2
+                #SA
+                elif pos[(x,y)][0]==pos1[0]-1 and pos[(x,y)][1]<pos1[1]:
+                    print("SA")
+                    if pos1[1]-pos2[1]==-1:
+                        if pos[(x,y)][1]==pos1[1]-1:
+                            pos[(x,y)] = (pos[(x,y)][0]+1, pos[(x,y)][1])
+                        else: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]+1)
+                    else:
+                        pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]+1)
+
+                #SB
+                elif pos[(x,y)][0]==pos1[0]-1 and pos[(x,y)][1]>=pos1[1]:
+                    if pos1[1]-pos2[1]==1:
+                        if pos[(x,y)][1]==0:
+                            pos[(x,y)] = (pos[(x,y)][0]+1, pos[(x,y)][1])
+                        else:
+                            pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]+1)
+                    
+                    print("SB")
+                #SC
+                elif pos[(x,y)][0]==pos2[0] and pos[(x,y)][1]<pos2[1]:
+                    if pos[(x,y)][1]==-h+1:
+                        pos[(x,y)] = (pos[(x,y)][0]-1, pos[(x,y)][1])
+                    else: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]-1)
+                    print("SC")
+                #SD
+                elif pos[(x,y)][0]==pos2[0] and pos[(x,y)][1]>pos2[1]:
+                    if pos1[1]-pos2[1]==-1:
+                        pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]+1)
+                    else:
+                        pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]-1)
+                    print("SD")
+
+            elif casea:
+                if pos[(x,y)] == pos1: pos[(x,y)] = pos2
+                elif pos[(x,y)][0]==pos1[0]-1 and pos[(x,y)][1]<=pos1[1]:
+                    print("SA")
+                    if pos1[1]-pos2[1]==-1:
+                        if pos[(x,y)][1]==-h+1:
+                            pos[(x,y)] = (pos[(x,y)][0]+1, pos[(x,y)][1])
+                        else: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]-1)
+                elif pos[(x,y)][0]==pos1[0]-1 and pos[(x,y)][1]>pos1[1]:
+                    print("SB")
+                    if pos1[1]-pos2[1]==1:
+                        if pos[(x,y)][1]==pos1[1]+1:
+                            pos[(x,y)] = (pos[(x,y)][0]+1, pos[(x,y)][1])
+                        else: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]-1)
+                    else: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]-1)
+
+                elif pos[(x,y)][0]==pos2[0] and pos[(x,y)][1]<pos2[1]:
+                    if pos1[1]-pos2[1]==1:
+                        pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]-1)
+                    else: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]+1)
+                    print("SC")
+                elif pos[(x,y)][0]==pos2[0] and pos[(x,y)][1]>pos2[1]:
+                    
+                    if pos[(x,y)][1]==0:
+                        pos[(x,y)] = (pos[(x,y)][0]-1, pos[(x,y)][1])
+                    else: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]+1)
+
+                    print("SD")
+                else:
+                    print("else")
+        
+
+    
+    return G_guards, G_edges, pos, True
+
+def move_guards_s (G, G_guards, G_edges, pos, edge, h, w):
+    G_edges.add_edge(edge[0], edge[1])
+    pos_nodes = get_pos(G)
+    if pos_nodes[edge[0]] in list(pos.values()):
+        pos1 = pos_nodes[(edge[0][0],edge[0][1])]
+        pos2 = pos_nodes[(edge[1][0],edge[1][1])]
+    else:
+        pos1 = pos_nodes[(edge[1][0],edge[1][1])]
+        pos2 = pos_nodes[(edge[0][0],edge[0][1])]
+    #if egde is vertical rotate the graph
     if pos1[1]!=pos2[1]:
-        print("vertical")
         G1 = nx.grid_2d_graph(w, h, periodic=False)
         edge1=((edge[0][1], w-edge[0][0]-1), (edge[1][1], w-edge[1][0]-1))
-        cycle1 = hamilton_v2(G1, edge1)
+        cycle1 = hamilton(G1, edge1)
         cycle=[]
         for (x,y) in cycle1:
             cycle.append((w-1-y, x))
     else:
-        print("orizontal")
-        cycle = hamilton_v2(G, edge)
-    
-    
+        cycle = hamilton(G, edge)
     pos_cycle = []
     for node in cycle:
         pos_cycle.append(pos_nodes[node])
@@ -1178,49 +1314,14 @@ def move_guards_s (G, G_guards, pos, edge, h, w):
                 pos[(x,y)]=pos_cycle[-1]
             else:
                 pos[(x,y)]=pos_cycle[i-1]
-    return G_guards, pos, True
+    return G_guards, G_edges, pos, True
 
 
 """
 Hamiltonian path algorithm: https://gist.github.com/mikkelam/ab7966e7ab1c441f947b
+modified to be a cycle going thought the attacked edge
 """
-done = False
 def hamilton(G, edge):
-    global done
-    F = [(G,[list(G.nodes())[0]])]
-    n = G.number_of_nodes()
-    while F:
-        graph,path = F.pop()
-        confs = []
-        if path[-1] == edge[0] and not done:
-            neighbors=[edge[1]]
-            done = True
-        elif path[-1] == edge[1] and not done:
-            neighbors=[edge[0]]
-            done = True
-        else:
-            neighbors = (node for node in graph.neighbors(path[-1]) 
-                     if node != path[-1]) #exclude self loops
-        for neighbor in neighbors:
-            conf_p = path[:]
-            conf_p.append(neighbor)
-            conf_g = nx.Graph(graph)
-            conf_g.remove_node(path[-1])
-            confs.append((conf_g,conf_p))
-        for g,p in confs:
-            if len(p)==n:
-                i1 = p.index(edge[0])
-                i2 = p.index(edge[1])
-                if abs(i1-i2)==1 or abs(i1-i2)==n-1:
-                    if abs(p[0][0]-p[-1][0])<=1 and abs(p[0][0]-p[-1][0])>=-1:
-                        if abs(p[0][1]-p[-1][1])<=1 and abs(p[0][1]-p[-1][1])>=-1:
-                            print(p)
-                            return p
-            else:
-                F.append((g,p))
-    return None
-
-def hamilton_v2(G, edge):
     F = [(G,[list(G.nodes())[0]])]
     n = G.number_of_nodes()
     while F:
@@ -1228,22 +1329,21 @@ def hamilton_v2(G, edge):
         confs = []
         neighbors = (node for node in graph.neighbors(path[-1])
                      if node != path[-1]) #exclude self loops
-        
         for neighbor in neighbors:
             conf_p = path[:]
             conf_p.append(neighbor)
             conf_g = nx.Graph(graph)
             conf_g.remove_node(path[-1])
             confs.append((conf_g,conf_p))
-        
         for g,p in confs:
             if len(p)==n:
                 i1 = p.index(edge[0])
                 i2 = p.index(edge[1])
+                #check if goes thought the edge
                 if abs(i1-i2)==1 or abs(i1-i2)==n-1:
+                    #check if is a cycle
                     if abs(p[0][0]-p[-1][0])<=1 and abs(p[0][0]-p[-1][0])>=-1:
                         if abs(p[0][1]-p[-1][1])<=1 and abs(p[0][1]-p[-1][1])>=-1:
-                            print(p)
                             return p
             else:
                 F.append((g,p))

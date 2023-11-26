@@ -1,11 +1,10 @@
 sistemare:
 - check hex ultima colonna
+- oct caso in cui l'altezza è dispari, non muovere le guardie fuori dal range
 
-- app online ma lenta
 interfaccia:
-- scegliere arco dal grafo
-- mostrare archi
-
+- legenda guardie e non
+- dimensione labels
 
 
 
