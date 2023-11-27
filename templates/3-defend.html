@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href='https://fonts.googleapis.com/css?family=Hind' rel='stylesheet'>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <style>
+    :root {
+        --d: {{display}};}
+    img {
+        border-radius: 25px;}
+
+    body {
+        background-color:#bfdef3;}
+
+    .div-1 {
+        background: #ffffff;
+        border-radius: 25px;}
+
+    h1 {
+        color: #000000;
+        font-family: 'Hind';}
+
+    label {
+        color: #000000;
+        font-family: 'Hind';
+        font-size:18px}
+
+    p {
+        margin: 20px;}
+    
+    .dot {
+        height: 15px;
+        width: 15px;
+        background-color: #bbb;
+        border-radius: 50%;
+        display: inline-block;
+        }
+    </style>
+    <title>Defend</title>
+</head>
+<body>
+    <div class="container text-center  my-2">
+        <h1>Attacked edge: {{edge}}</h1>
+        
+        <form action="/defend" method="post">
+            <label for="edge">Next edge:</label>
+            <input type="text" id="edge" name="edge" placeholder="eg. (1,2)">
+            <input type="submit" value="Submit">
+        </form>
+        <div class="alert alert-danger my-2" role="alert" id="alert" style="display: var(--d);">
+            <div> {{message}} </div>
+        </div>
+    </div>
+
+    <div class="row justify-content-evenly text-center my-5">
+        <div class="div-1 col-2">
+            <p style="font-size:16px">
+                - Guards are in yellow  <span class="dot" style="background-color: #FFC600"></span> </br>
+                - Nodes are in blue  <span class="dot" style="background-color: #1E96FC"></span> </br>
+                - Attacked edges are in red  <span class="dot" style="background-color: #ff0000"></span> </br>
+            </p>
+        </div>
+    </div>
+        
+    <div class="container  text-center  my-5">
+        <img class="vh-100 img" id="gif-1" src="{{ url_for('static', filename='anim2.gif') }}" alt="Plot">
+        <button class="btn btn-light" onclick="document.getElementById('gif-1').src='static/anim2.gif'">
+            Replay</button>
+        <a type="button" class="btn btn-light" href="/">Create another grid</a>
+    </div>
+    
+</body>
+</html>
+

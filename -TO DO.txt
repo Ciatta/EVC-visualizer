@@ -1,6 +1,5 @@
 sistemare:
 - check hex ultima colonna
-- oct caso in cui l'altezza è dispari, non muovere le guardie fuori dal range
 
 interfaccia:
 - legenda guardie e non

@@ -30,86 +30,70 @@ def main(h, w, s, edge):
     elif (s=='square'): shape = shapes.square
     elif (s=='octagon'): shape = shapes.octagon
     elif (s=='hexagon'): shape = shapes.hexagon
-    
 
-    
+    #Make the graphs
     G = make_grid(shape, height, width)
     G_guards = put_guards(shape, G, height, width)
     G_edges = nx.Graph()
 
+    #Get node positions and labels
     pos = get_pos(G)
     pos_g = get_pos(G_guards)
     pos_g1=pos_g.copy()
-
     labels = get_labels(G)
 
+    #Initialize the plot
     fig, ax = plt.subplots()
-   
-    # turn off axis spines
     ax.xaxis.set_visible(False)
     ax.yaxis.set_visible(False)
     ax.set_frame_on(False)
     fig.set_facecolor(color)
-   
     fig.tight_layout()
+
+    #Save the image
     if max(height,width) <= 10: font_size=10
     elif max(height,width) <= 15: font_size=7
     elif max(height,width) <= 20: font_size=5
-   
     anim = animate_node(1, fig, ax, G, pos, G_guards, G_edges, pos_g, pos_g1, labels, font_size)
     anim.save('static/test.png', writer=PillowWriter(fps=10), dpi=200)
-    convert("static/test.png", "static/test2.png", 100)
-    """
-    fig, ax = plt.subplots()
-    nx.draw(G, pos=pos, ax=ax, with_labels=True, labels=labels, node_color="gray", node_size=40, font_size=10)
-    nx.draw(G_guards, pos=pos_g, ax=ax, node_color="blue", node_size=40, font_size=12)
-    plt.gca().set_aspect('equal')
-    plt.savefig("static/test.png", format='png', bbox_inches='tight', transparent="True", dpi=300)
-    plt.close
-    # Save the plot to a bytes object
-   
-    #plt.figure(figsize=(100,60))
-    """
-
-
-    return "yes"
+    convert("static/test.png", "static/test2.png")
+  
+    return True
     
    
 def defend(edge):
     global width, height, shape, G, G_guards, G_edges, pos_g, pos_g1
+    
+    #Fix nodes positions
     for k in pos_g:
         pos_g[k]=(round(pos_g[k][0]), round(pos_g[k][1]))
     pos_g1=pos_g.copy()
     
-   
+    #Move guards
     G_guards, G_edges, pos_g1, edge_ok = move_guards(shape, G, G_guards, G_edges, pos_g1, edge, height, width)
     
+    #Get positons and labels
     pos = get_pos(G)
     labels = get_labels(G)
+
+    #Initialize the plot
     fig, ax = plt.subplots()
-    if max(height,width) <= 10: font_size=10
-    elif max(height,width) <= 15: font_size=7
-    elif max(height,width) <= 20: font_size=5
-    anim = animate_node(12, fig, ax, G, pos, G_guards, G_edges, pos_g, pos_g1, labels, font_size)
-    # turn off axis spines
     ax.xaxis.set_visible(False)
     ax.yaxis.set_visible(False)
     ax.set_frame_on(False)
     fig.set_facecolor(color)
     fig.tight_layout()
-   
+
+    #Save the image
+    if max(height,width) <= 10: font_size=10
+    elif max(height,width) <= 15: font_size=7
+    elif max(height,width) <= 20: font_size=5
+    anim = animate_node(12, fig, ax, G, pos, G_guards, G_edges, pos_g, pos_g1, labels, font_size)
     anim.save('static/anim.gif', writer=PillowWriter(fps=10), dpi=200)
-    convert("static/anim.gif", "static/anim2.gif", 100)
-    return edge_ok
-    """
-    fig, ax = plt.subplots()
-    nx.draw(G, pos=pos, ax=ax, with_labels=True, labels=labels, node_color="gray", node_size=40, font_size=10)
-    nx.draw(G_guards, pos=pos_g1, ax=ax, node_color="blue", edge_color="red", node_size=40, font_size=12)
-    plt.gca().set_aspect('equal')
-    #plt.savefig("static/anim2.gif", format='png', bbox_inches='tight', transparent="True", dpi=300)
-    plt.close
-    """
+    convert("static/anim.gif", "static/anim2.gif")
     
+    return edge_ok
+   
 
 
     

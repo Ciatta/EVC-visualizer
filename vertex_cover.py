@@ -1139,14 +1139,16 @@ def move_guards_o (G, G_guards,  G_edges, pos, edge, h, w):
                 if pos[(x,y)] == pos1:
                     pos[(x,y)] = pos2
                 elif pos[(x,y)][0]==pos1[0] and pos[(x,y)][1]<pos1[1]:
-                    pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]+1)
+                    if pos[(x,y)][1]+1<=0:
+                        pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]+1)
                 elif pos[(x,y)][0]==pos1[0] and pos[(x,y)][1]>pos1[1]:
                     continue
                 elif pos[(x,y)][0]==pos2[0] and pos[(x,y)][1]<pos2[1]:
                     if pos[(x,y)][1]==-h+1: pos[(x,y)] = (pos[(x,y)][0]-dir_x, pos[(x,y)][1])
-                    else: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]-1)
+                    elif pos[(x,y)][1]-1>-h: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]-1)
                 elif pos[(x,y)][0]==pos2[0] and pos[(x,y)][1]>pos2[1]:
-                    pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]+1)
+                    if pos[(x,y)][1]+1<=0:
+                        pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]+1)
             elif casea:
                 if pos[(x,y)] == pos1:
                     print("guard")
@@ -1155,14 +1157,16 @@ def move_guards_o (G, G_guards,  G_edges, pos, edge, h, w):
                     print("SA")
                 elif pos[(x,y)][0]==pos1[0] and pos[(x,y)][1]>pos1[1]:
                     print("SB")
-                    pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]-1)
+                    if pos[(x,y)][1]-1>-h:
+                        pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]-1)
                 elif pos[(x,y)][0]==pos2[0] and pos[(x,y)][1]<pos2[1]:
                     print("SC")
-                    pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]-1)
+                    if pos[(x,y)][1]-1>-h:
+                        pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]-1)
                 elif pos[(x,y)][0]==pos2[0] and pos[(x,y)][1]>pos2[1]:
                     print("SD")
                     if pos[x,y][1]==0: pos[(x,y)] = (pos[(x,y)][0]-dir_x, pos[(x,y)][1])
-                    else: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]+1)
+                    elif pos[(x,y)][1]+1<=0: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]+1)
                     print("SD")
                 else:
                     print("else")
@@ -1171,17 +1175,20 @@ def move_guards_o (G, G_guards,  G_edges, pos, edge, h, w):
             if caseb:
                 if pos[(x,y)] == pos1: pos[(x,y)] = pos2
                 elif pos[(x,y)][0]==pos1[0] and pos[(x,y)][1]<pos1[1]:
-                    pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]+1)
+                    if pos[(x,y)][1]+1<=0:
+                        pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]+1)
                     print("SA")
                 elif pos[(x,y)][0]==pos1[0] and pos[(x,y)][1]>pos1[1]:
                     print("SB")
                 elif pos[(x,y)][0]==pos2[0] and pos[(x,y)][1]<pos2[1]:
                     if pos[(x,y)][1]==-h+1:
                         pos[(x,y)] = (pos[(x,y)][0]-dir_x, pos[(x,y)][1])
-                    else: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]-1)
+                    else:
+                        if pos[(x,y)][1]-1>-h: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]-1)
                     print("SC")
                 elif pos[(x,y)][0]==pos2[0] and pos[(x,y)][1]>pos2[1]:
-                    pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]+1)
+                    if pos[(x,y)][1]+1<=0:
+                        pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]+1)
                     print("SD")
                 else:
                     print("else")
@@ -1190,15 +1197,19 @@ def move_guards_o (G, G_guards,  G_edges, pos, edge, h, w):
                 elif pos[(x,y)][0]==pos1[0] and pos[(x,y)][1]<pos1[1]:
                     print("SA")
                 elif pos[(x,y)][0]==pos1[0] and pos[(x,y)][1]>pos1[1]:
-                    pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]-1)
+                    if pos[(x,y)][1]-1>-h:
+                        pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]-1)
                     print("SB")
                 elif pos[(x,y)][0]==pos2[0] and pos[(x,y)][1]<pos2[1]:
-                    pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]-1)
+                    if pos[(x,y)][1]-1>-h:
+                        pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]-1)
                     print("SC")
                 elif pos[(x,y)][0]==pos2[0] and pos[(x,y)][1]>pos2[1]:
                     if pos[(x,y)][1]==0:
                         pos[(x,y)] = (pos[(x,y)][0]-dir_x, pos[(x,y)][1])
-                    else: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]+1)
+                    else:
+                        if pos[(x,y)][1]+1<=0:
+                            pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]+1)
                     print("SD")
                 else:
                     print("else")
@@ -1214,8 +1225,8 @@ def move_guards_o (G, G_guards,  G_edges, pos, edge, h, w):
                     if pos1[1]-pos2[1]==-1:
                         if pos[(x,y)][1]==pos1[1]-1:
                             pos[(x,y)] = (pos[(x,y)][0]+1, pos[(x,y)][1])
-                        else: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]+1)
-                    else:
+                        elif pos[(x,y)][1]+1<=0: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]+1)
+                    elif pos[(x,y)][1]+1<=0:
                         pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]+1)
 
                 #SB
@@ -1223,7 +1234,7 @@ def move_guards_o (G, G_guards,  G_edges, pos, edge, h, w):
                     if pos1[1]-pos2[1]==1:
                         if pos[(x,y)][1]==0:
                             pos[(x,y)] = (pos[(x,y)][0]+1, pos[(x,y)][1])
-                        else:
+                        elif pos[(x,y)][1]+1<=0:
                             pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]+1)
                     
                     print("SB")
@@ -1231,13 +1242,14 @@ def move_guards_o (G, G_guards,  G_edges, pos, edge, h, w):
                 elif pos[(x,y)][0]==pos2[0] and pos[(x,y)][1]<pos2[1]:
                     if pos[(x,y)][1]==-h+1:
                         pos[(x,y)] = (pos[(x,y)][0]-1, pos[(x,y)][1])
-                    else: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]-1)
+                    elif pos[(x,y)][1]-1>-h: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]-1)
                     print("SC")
                 #SD
                 elif pos[(x,y)][0]==pos2[0] and pos[(x,y)][1]>pos2[1]:
                     if pos1[1]-pos2[1]==-1:
-                        pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]+1)
-                    else:
+                        if pos[(x,y)][1]+1<=0:
+                            pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]+1)
+                    elif pos[(x,y)][1]-1>-h:
                         pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]-1)
                     print("SD")
 
@@ -1248,25 +1260,31 @@ def move_guards_o (G, G_guards,  G_edges, pos, edge, h, w):
                     if pos1[1]-pos2[1]==-1:
                         if pos[(x,y)][1]==-h+1:
                             pos[(x,y)] = (pos[(x,y)][0]+1, pos[(x,y)][1])
-                        else: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]-1)
+                        else:
+                            if pos[(x,y)][1]-1>-h: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]-1)
                 elif pos[(x,y)][0]==pos1[0]-1 and pos[(x,y)][1]>pos1[1]:
                     print("SB")
                     if pos1[1]-pos2[1]==1:
                         if pos[(x,y)][1]==pos1[1]+1:
                             pos[(x,y)] = (pos[(x,y)][0]+1, pos[(x,y)][1])
-                        else: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]-1)
-                    else: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]-1)
+                        else:
+                            if pos[(x,y)][1]-1>-h: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]-1)
+                    else:
+                        if pos[(x,y)][1]-1>-h: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]-1)
 
                 elif pos[(x,y)][0]==pos2[0] and pos[(x,y)][1]<pos2[1]:
                     if pos1[1]-pos2[1]==1:
-                        pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]-1)
-                    else: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]+1)
+                        if pos[(x,y)][1]-1>-h:
+                            pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]-1)
+                    else:
+                        if pos[(x,y)][1]+1<=0: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]+1)
                     print("SC")
                 elif pos[(x,y)][0]==pos2[0] and pos[(x,y)][1]>pos2[1]:
                     
                     if pos[(x,y)][1]==0:
                         pos[(x,y)] = (pos[(x,y)][0]-1, pos[(x,y)][1])
-                    else: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]+1)
+                    else:
+                        if pos[(x,y)][1]+1<=0: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]+1)
 
                     print("SD")
                 else:
