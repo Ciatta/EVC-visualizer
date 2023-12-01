@@ -48,8 +48,8 @@ def main(h, w, s, edge):
     ax.yaxis.set_visible(False)
     ax.set_frame_on(False)
     fig.set_facecolor(color)
-    fig.tight_layout()
-
+    fig.subplots_adjust(top=1,bottom=0,left=0,right=1)
+    
     #Save the image
     if max(height,width) <= 10: font_size=10
     elif max(height,width) <= 15: font_size=7
@@ -57,7 +57,7 @@ def main(h, w, s, edge):
     anim = animate_node(1, fig, ax, G, pos, G_guards, G_edges, pos_g, pos_g1, labels, font_size)
     anim.save('static/test.png', writer=PillowWriter(fps=10), dpi=200)
     convert("static/test.png", "static/test2.png")
-  
+    
     return True
     
    
@@ -82,7 +82,7 @@ def defend(edge):
     ax.yaxis.set_visible(False)
     ax.set_frame_on(False)
     fig.set_facecolor(color)
-    fig.tight_layout()
+    fig.subplots_adjust(top=1,bottom=0,left=0,right=1)
 
     #Save the image
     if max(height,width) <= 10: font_size=10

@@ -47,7 +47,6 @@ def make_grid(shape, h, w):
                     to_add.append(((i, j), (i+1, j-1)))
         for edge in to_add:
             G.add_edge(edge[1], edge[0])
-        
     return G
 
 #Get nodes positions

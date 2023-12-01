@@ -1,9 +1,8 @@
 sistemare:
 - check hex ultima colonna
 
-interfaccia:
-- legenda guardie e non
-- dimensione labels
+
+
 
 
 
