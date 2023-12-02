@@ -120,12 +120,12 @@ def move_guards_h(G, G_guards, G_edges, pos, edge, h, w):
     else:
         pos1 = pos_nodes[(edge[1][0],edge[1][1])]
         pos2 = pos_nodes[(edge[0][0],edge[0][1])]
-
+    # guards on even y cases
     case1 = (pos2[0]==pos1[0] and pos2[1]==pos1[1]+1)
     case2 = (pos2[0]==pos1[0] and pos2[1]==pos1[1]-1)
     case3 = (pos2[0]==pos1[0]+1 and pos2[1]==pos1[1]-1)
     case4 = (pos2[0]==pos1[0]-1 and pos2[1]==pos1[1]-1)
-
+    # guards on odd y cases
     case1b = (pos2[0]==pos1[0] and pos2[1]==pos1[1]-1)
     case2b = (pos2[0]==pos1[0] and pos2[1]==pos1[1]+1)
     case3b = (pos2[0]==pos1[0]+1 and pos2[1]==pos1[1]+1)
@@ -133,13 +133,11 @@ def move_guards_h(G, G_guards, G_edges, pos, edge, h, w):
 
     mul4 = h%4==0
     s1 = pos[(0,0)][1]%2==0
-
+    
+    # move guards according to the cases
     for x,y in G_guards.nodes():
         posg = pos[(x,y)]
-        print("-----------------------------------------------------")
-        print(posg)
-        
-        #Guards on even y
+        #Guards on even y 
         if s1:
             if case1:
                 #guard
@@ -164,6 +162,7 @@ def move_guards_h(G, G_guards, G_edges, pos, edge, h, w):
                         else: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]-1)
                     elif posg[1]==0: pos[(x,y)] = (pos[(x,y)][0]+1, pos[(x,y)][1]-1)
                     else: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]-1)
+            
             if case2:
                 #guard
                 if posg == pos1: pos[(x,y)] = pos2
@@ -196,8 +195,11 @@ def move_guards_h(G, G_guards, G_edges, pos, edge, h, w):
                 #posg[x] = pos1[x]
                 elif posg[0]==pos1[0]:
                     if posg[1]==0:
-                        if mul4: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]-1)
-                        else: pos[(x,y)] = (pos[(x,y)][0]+1, pos[(x,y)][1]-1)
+                        if pos1[1]==-h+2:
+                            if mul4: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]-1)
+                            else: pos[(x,y)] = (pos[(x,y)][0]+1, pos[(x,y)][1]-1)
+                        else:
+                            pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]-1)
                     elif posg[1]==-h+2:
                         if mul4: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]-1)
                         else: pos[(x,y)] = (pos[(x,y)][0]+1, pos[(x,y)][1]-1)
@@ -214,7 +216,6 @@ def move_guards_h(G, G_guards, G_edges, pos, edge, h, w):
                             else: 
                                 if mul4: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]+1)
                                 else: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]-1)
-                        
                         else:
                             if posg[1]==0:
                                 pos[(x,y)] = (pos[(x,y)][0]+1, pos[(x,y)][1]-1)
@@ -229,6 +230,7 @@ def move_guards_h(G, G_guards, G_edges, pos, edge, h, w):
                             if mul4: pos[(x,y)] = (pos[(x,y)][0]-1, pos[(x,y)][1]-1)
                             else: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]-1)
                         else: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]-1)
+            
             if case3:
                 #guard
                 if posg == pos1: pos[(x,y)] = pos2
@@ -248,8 +250,7 @@ def move_guards_h(G, G_guards, G_edges, pos, edge, h, w):
                         else: pos[(x,y)] = (pos[(x,y)][0]+1, pos[(x,y)][1]-1)
                     else:
                         if (-posg[1])%4==0: pos[(x,y)] = (pos[(x,y)][0]+1, pos[(x,y)][1]-1)
-                        else: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]+1)
-                            
+                        else: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]+1)           
                 #posg[x] >= pos1[x]+1
                 elif posg[0]>=pos1[0]+1:
                     if posg[0]==pos1[0]+1:
@@ -269,10 +270,11 @@ def move_guards_h(G, G_guards, G_edges, pos, edge, h, w):
                             else: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]-1)
                         else: 
                             pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]-1)
+            
             if case4:
                 #guard
                 if posg == pos1: pos[(x,y)] = pos2
-                #posg[x] = pos1[x]-1
+                #posg[x] <= pos1[x]-1
                 elif posg[0]<=pos1[0]-1:
                     if posg[0]==pos1[0]-1:
                         if posg[1]==0:
@@ -287,8 +289,7 @@ def move_guards_h(G, G_guards, G_edges, pos, edge, h, w):
                         if posg[1]==-h+2:
                             if mul4: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]-1)
                             else: pos[(x,y)] = (pos[(x,y)][0]+1, pos[(x,y)][1]-1)
-                        else: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]-1)
-                            
+                        else: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]-1)        
                 #posg[x] = pos1[x]
                 elif posg[0]==pos1[0]:
                     if posg[1]==0:
@@ -307,6 +308,8 @@ def move_guards_h(G, G_guards, G_edges, pos, edge, h, w):
                         if mul4: pos[(x,y)] = (pos[(x,y)][0]-1, pos[(x,y)][1]-1)
                         else: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]-1)
                     else: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]-1)
+        
+        #guards on odd y
         else:
             if case1b:
                 #guard
@@ -361,10 +364,14 @@ def move_guards_h(G, G_guards, G_edges, pos, edge, h, w):
                             else: pos[(x,y)] = (pos[(x,y)][0]-1, pos[(x,y)][1]+1)
                         else: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]+1)
                 #posg[x] = pos1[x]
+                #TO DO: dividi in sottocasi
                 elif posg[0]==pos1[0]:
                     if posg[1]==-1:
-                        if mul4: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]+1)
-                        else: pos[(x,y)] = (pos[(x,y)][0]-1, pos[(x,y)][1]+1)
+                        if pos1[1]==-h+1:
+                            if mul4: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]+1)
+                            else: pos[(x,y)] = (pos[(x,y)][0]-1, pos[(x,y)][1]+1)
+                        else:
+                            pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]+1)
                     elif posg[1]==-h+1:
                         if mul4: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]+1)
                         else: pos[(x,y)] = (pos[(x,y)][0]-1, pos[(x,y)][1]+1)
@@ -382,7 +389,6 @@ def move_guards_h(G, G_guards, G_edges, pos, edge, h, w):
                             else: 
                                 if mul4: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]-1)
                                 else: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]+1)
-                        
                         else:
                             if posg[1]==-1:
                                 pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]-1)
@@ -398,6 +404,7 @@ def move_guards_h(G, G_guards, G_edges, pos, edge, h, w):
                             if mul4: pos[(x,y)] = (pos[(x,y)][0]+1, pos[(x,y)][1]+1)
                             else: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]+1)
                         else: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]+1)
+            
             if case3b:
                 #guard
                 if posg == pos1: pos[(x,y)] = pos2
@@ -417,8 +424,7 @@ def move_guards_h(G, G_guards, G_edges, pos, edge, h, w):
                         else: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]-1)
                     else:
                         if ((-posg[1])+1)%4==0: pos[(x,y)] = (pos[(x,y)][0]+1, pos[(x,y)][1]+1)
-                        else: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]-1)
-                            
+                        else: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]-1) 
                 #posg[x] >= pos1[x]+1
                 elif posg[0]>=pos1[0]+1:
                     if posg[0]==pos1[0]+1:
@@ -438,6 +444,7 @@ def move_guards_h(G, G_guards, G_edges, pos, edge, h, w):
                             else: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]+1)
                         else: 
                             pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]+1)
+            
             if case4b:
                 #guard
                 if posg == pos1: pos[(x,y)] = pos2
@@ -456,8 +463,7 @@ def move_guards_h(G, G_guards, G_edges, pos, edge, h, w):
                         if posg[1]==-h+1:
                             if mul4: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]+1)
                             else: pos[(x,y)] = (pos[(x,y)][0]-1, pos[(x,y)][1]+1)
-                        else: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]+1)
-                            
+                        else: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]+1)  
                 #posg[x] = pos1[x]
                 elif posg[0]==pos1[0]:
                     if posg[1]==-1:
@@ -476,9 +482,6 @@ def move_guards_h(G, G_guards, G_edges, pos, edge, h, w):
                         if mul4: pos[(x,y)] = (pos[(x,y)][0]+1, pos[(x,y)][1]+1)
                         else: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]+1)
                     else: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]+1)
-
-    
-
 
     return G_guards, G_edges, pos, True
 
@@ -661,7 +664,7 @@ def move_guards_t (G, G_guards, G_edges, pos, edge, h, w):
     tiles_y = h//3
     tiles_x = w//3
    
-    #fing where the attacked edge is
+    #find where the attacked edge is
     easy_case = False
     in_stripe_y = False
     stripe_tile_y = False
@@ -1142,7 +1145,8 @@ def move_guards_o (G, G_guards,  G_edges, pos, edge, h, w):
     case3 = (pos1[0]%2==1 and pos2[0]==pos1[0])   
     casea = ((pos2[0],-1) in list(pos.values()))
     caseb = ((pos2[0],0) in list(pos.values()))
-    
+
+    #move the guards according to the cases
     for x,y in G_guards.nodes():
         dir_x = pos2[0]-pos1[0]
         if easy_case:

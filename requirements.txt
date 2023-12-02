@@ -4,4 +4,5 @@ Flask
 matplotlib
 networkx
 Pillow
-Gunicorn
+#Gunicorn
+pywebview
