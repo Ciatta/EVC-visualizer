@@ -38,7 +38,7 @@ def attack():
 
 webview.create_window('Eternal Vertex Cover - Visualizer', app) 
 if __name__ == '__main__':
-    #app.run(debug=True)
-    webview.start()
+    app.run(debug=True)
+    #webview.start()
   
 

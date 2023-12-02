@@ -91,8 +91,10 @@ Move guards according to the grid type and the attacked edge
 def move_guards(shape, G, G_guards, G_edges, pos, edge, h, w):
     #get the edge
     edge = edge[1:-1].split(",")
-    x = int(edge[0])
-    y=int(edge[1])
+    try: x=int(edge[0])
+    except: return G_guards, G_edges, pos, False
+    try: y=int(edge[1])
+    except: return G_guards, G_edges, pos, False
     #map edge label to id
     labels = get_labels(G)
     x_n=list(labels.keys())[x-1]

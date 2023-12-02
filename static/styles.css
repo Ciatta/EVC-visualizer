@@ -1,0 +1,43 @@
+body {
+    background-color:#B8D4E3;}
+
+.div-1 {
+    background: #ffffff;
+    border-radius: 25px;
+    width: auto;
+    height: auto;}
+
+.div-2 {
+    background: #ffffff;
+    border-radius: 25px;}
+
+h1 {
+    color: #000000;
+    font-family: 'Hind';
+    font-weight: bold;}
+
+h2 {
+    color: #000000;
+    font-family: 'Hind';}
+
+label {
+    color: #000000;
+    font-family: 'Hind';
+    font-size:18px}
+
+p {
+    margin: 20px;}
+
+.dot {
+    height: 15px;
+    width: 15px;
+    border-radius: 50%;
+    display: inline-block;
+    }
+img {
+    border-radius: 25px;
+    width: auto;
+    height: auto;}
+
+
+   

@@ -20,7 +20,7 @@ G_guards= []
 G_edges= []
 pos_g={}
 pos_g1={}
-color = "#bfdef3"
+color = "#B8D4E3"
 
 def main(h, w, s, edge):
     global width, height, shape, G, G_guards,  G_edges, pos_g
