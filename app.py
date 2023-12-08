@@ -24,12 +24,17 @@ def result():
         m = "For triangular grid the height and the width needs to be at least 2! Try again."
         return render_template('1-index.html', display='inline-block', message=m)
     main(int(h), int(w), shape, (0,0))
-    return render_template('2-result.html', h=h, w=w, shape=shape)
+    if shape=="hexagon": t = "Finite Hexagonal Grid"
+    elif shape=="octagon": t = "Finite Octagonal Grid"
+    elif shape=="triangle": t = "Finite Triangular Grid"
+    elif shape=="square": t = "Finite Squared Grid"
+    return render_template('2-result.html', h=h, w=w, title=t)
 
 @app.route('/defend', methods=['POST'])
 def attack():
     edge = request.form['edge']
     if defend(edge):
+       
         return render_template('3-defend.html', edge=edge, display='none')
     else:
         m = "Invalid edge, try again!"

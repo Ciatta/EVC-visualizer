@@ -18,12 +18,13 @@ width = 0
 G = []
 G_guards= []
 G_edges= []
+G_last_edge= []
 pos_g={}
 pos_g1={}
 color = "#B8D4E3"
 
 def main(h, w, s, edge):
-    global width, height, shape, G, G_guards,  G_edges, pos_g
+    global width, height, shape, G, G_guards,  G_edges, G_last_edge, pos_g
     width = w
     height=h
     if (s=='triangle'): shape = shapes.triangle
@@ -35,6 +36,7 @@ def main(h, w, s, edge):
     G = make_grid(shape, height, width)
     G_guards = put_guards(shape, G, height, width)
     G_edges = nx.Graph()
+    G_last_edge = nx.Graph()
 
     #Get node positions and labels
     pos = get_pos(G)
@@ -51,10 +53,10 @@ def main(h, w, s, edge):
     fig.subplots_adjust(top=1,bottom=0,left=0,right=1)
     
     #Save the image
-    if max(height,width) <= 10: font_size=10
+    if max(height,width) <= 10: font_size=8
     elif max(height,width) <= 15: font_size=7
     elif max(height,width) <= 20: font_size=5
-    anim = animate_node(1, fig, ax, G, pos, G_guards, G_edges, pos_g, pos_g1, labels, font_size)
+    anim = animate_node(1, fig, ax, G, pos, G_guards, G_edges, G_last_edge, pos_g, pos_g1, labels, font_size, shape)
     anim.save('static/test.png', writer=PillowWriter(fps=10), dpi=200)
     convert("static/test.png", "static/test2.png")
     
@@ -62,7 +64,7 @@ def main(h, w, s, edge):
     
    
 def defend(edge):
-    global width, height, shape, G, G_guards, G_edges, pos_g, pos_g1
+    global width, height, shape, G, G_guards, G_edges, G_last_edge, pos_g, pos_g1
     
     #Fix nodes positions
     for k in pos_g:
@@ -70,7 +72,7 @@ def defend(edge):
     pos_g1=pos_g.copy()
     
     #Move guards
-    G_guards, G_edges, pos_g1, edge_ok = move_guards(shape, G, G_guards, G_edges, pos_g1, edge, height, width)
+    G_guards, G_edges, G_last_edge, pos_g1, edge_ok = move_guards(shape, G, G_guards, G_edges, G_last_edge, pos_g1, edge, height, width)
     
     #Get positons and labels
     pos = get_pos(G)
@@ -85,10 +87,10 @@ def defend(edge):
     fig.subplots_adjust(top=1,bottom=0,left=0,right=1)
 
     #Save the image
-    if max(height,width) <= 10: font_size=10
+    if max(height,width) <= 10: font_size=8
     elif max(height,width) <= 15: font_size=7
     elif max(height,width) <= 20: font_size=5
-    anim = animate_node(12, fig, ax, G, pos, G_guards, G_edges, pos_g, pos_g1, labels, font_size)
+    anim = animate_node(12, fig, ax, G, pos, G_guards, G_edges, G_last_edge, pos_g, pos_g1, labels, font_size, shape)
     anim.save('static/anim.gif', writer=PillowWriter(fps=10), dpi=200)
     convert("static/anim.gif", "static/anim2.gif")
     

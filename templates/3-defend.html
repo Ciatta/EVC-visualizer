@@ -16,37 +16,50 @@
     <div class="container text-center  my-2">
         <h1>Eternal Vertex Cover - Visualizer</h1>
         <h2 class="my-4">Attacked edge: {{edge}}</h2>
-        
-        <form action="/defend" method="post">
-            <label for="edge">Next edge:</label>
-            <input type="text" id="edge" name="edge" placeholder="eg. (1,2)">
-            <br> 
-            <input type="submit" class="btn btn-light" value="Submit">
-        </form>
-        <div class="alert alert-danger my-2" role="alert" id="alert" style="display: var(--d);">
-            <div> {{message}} </div>
-        </div>
     </div>
 
-    <div class="row justify-content-evenly text-center my-5">
-        <div class="div-1 col-2">
+
+    <div class="row  justify-content-center text-center my-5">
+        <div class="col-3">
+            <form action="/defend#bottom" method="post">
+                <label for="edge">Next edge:</label>
+                <input type="text" id="edge" name="edge" placeholder="eg. (1,2)">
+                <br> 
+                <input type="submit" class="btn btn-light" value="Submit">
+            </form>
+            
+        </div>
+       
+        <div class="div-1 col-3">
             <p style="font-size:16px">
                 - <b>Guards</b> are in yellow  <span class="dot" style="background-color: #FFC600"></span> </br>
                 - <b>Nodes</b> are in blue  <span class="dot" style="background-color: #1E96FC"></span> </br>
-                - <b>Attacked edges</b> are in red  <span class="dot" style="background-color: #ff0000"></span> </br>        </p>
+                - <b>Attacked edges</b> are in red  <span class="dot" style="background-color: #ff0000"></span> </br>
+            </p>
         </div>
     </div>
-        
-    <div class="container text-center">
-        <img id="gif-1" class="vh-100 img" src="{{ url_for('static', filename='anim2.gif') }}" alt="...">
-    </div>
+
+
+    
+
     <div class="container text-center my-2">
+        <div class="alert alert-danger my-2" role="alert" id="alert" style="display: var(--d);">
+            <div> {{message}} </div>
+        </div>
+        <br>
         <button class="btn btn-light" onclick="document.getElementById('gif-1').src='static/anim2.gif'">
             Replay</button>
 
         <a type="button" class="btn btn-light" href="/">Create another grid</a>
     </div>
+        
+    <div class="container text-center">
+        <img id="gif-1" class="vh-100 img" src="{{ url_for('static', filename='anim2.gif') }}" alt="...">
+    </div>
     
+
+    <div id="bottom"></div>
+    <footer><p>Developed by: Mauri Giada <a href="https://github.com/Ciatta"> [GitHub]</a></p></footer>
 </body>
 </html>
 

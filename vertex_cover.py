@@ -88,32 +88,34 @@ def put_guards_s(G, h, w):
 """
 Move guards according to the grid type and the attacked edge
 """
-def move_guards(shape, G, G_guards, G_edges, pos, edge, h, w):
+def move_guards(shape, G, G_guards, G_edges, G_last_edge, pos, edge, h, w):
     #get the edge
     edge = edge[1:-1].split(",")
     try: x=int(edge[0])
-    except: return G_guards, G_edges, pos, False
+    except: return G_guards, G_edges, G_last_edge, pos, False
     try: y=int(edge[1])
-    except: return G_guards, G_edges, pos, False
+    except: return G_guards, G_edges, G_last_edge, pos, False
     #map edge label to id
     labels = get_labels(G)
     x_n=list(labels.keys())[x-1]
     y_n=list(labels.keys())[y-1]
     edge = (x_n, y_n)
     #check if the edge is valid
-    if not G.has_edge(x_n, y_n): return G_guards, G_edges, pos, False
+    if not G.has_edge(x_n, y_n): return G_guards, G_edges, G_last_edge, pos, False
     #execute the move guards algorithm according to the grid type
-    if (shape == shapes.hexagon): return move_guards_h(G, G_guards, G_edges, pos, edge, h, w)
-    elif (shape == shapes.triangle): return move_guards_t(G, G_guards, G_edges, pos, edge, h, w)
-    elif (shape == shapes.octagon): return move_guards_o(G, G_guards, G_edges, pos, edge, h, w)
-    elif (shape == shapes.square): return move_guards_s(G, G_guards, G_edges, pos, edge, h, w)
+    if (shape == shapes.hexagon): return move_guards_h(G, G_guards, G_edges, G_last_edge, pos, edge, h, w)
+    elif (shape == shapes.triangle): return move_guards_t(G, G_guards, G_edges, G_last_edge, pos, edge, h, w)
+    elif (shape == shapes.octagon): return move_guards_o(G, G_guards, G_edges, G_last_edge, pos, edge, h, w)
+    elif (shape == shapes.square): return move_guards_s(G, G_guards, G_edges, G_last_edge, pos, edge, h, w)
 
 """
 Algoritm to move guards on a hexagonal grids
 """
-def move_guards_h(G, G_guards, G_edges, pos, edge, h, w):
+def move_guards_h(G, G_guards, G_edges, G_last_edge, pos, edge, h, w):
     #define the 4 cases, if the h is odd or even, step 1 or 2 and combine them
     G_edges.add_edge(edge[0], edge[1])
+    G_last_edge=nx.Graph()
+    G_last_edge.add_edge(edge[0], edge[1])
     pos_nodes = get_pos(G)
     if pos_nodes[edge[0]] in list(pos.values()):
         pos1 = pos_nodes[(edge[0][0],edge[0][1])]
@@ -490,13 +492,15 @@ def move_guards_h(G, G_guards, G_edges, pos, edge, h, w):
                         else: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]+1)
                     else: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]+1)
 
-    return G_guards, G_edges, pos, True
+    return G_guards, G_edges, G_last_edge, pos, True
 
 """
 Algoritm to move guards on a triangular grids
 """
-def move_guards_t (G, G_guards, G_edges, pos, edge, h, w):
+def move_guards_t (G, G_guards, G_edges, G_last_edge, pos, edge, h, w):
     G_edges.add_edge(edge[0], edge[1])
+    G_last_edge=nx.Graph()
+    G_last_edge.add_edge(edge[0], edge[1])
     pos_nodes = get_pos(G)
     s1 = (0,0) in list(pos.values())
 
@@ -1130,14 +1134,16 @@ def move_guards_t (G, G_guards, G_edges, pos, edge, h, w):
                         pos[(x,y)] = (pos[(x,y)][0]+strat[i][0], pos[(x,y)][1]+strat[i][1])
                         break
 
-    return G_guards, G_edges, pos, True
+    return G_guards, G_edges, G_last_edge, pos, True
 
 
 """
 Algoritm to move guards on a octagonal grids
 """                                   
-def move_guards_o (G, G_guards,  G_edges, pos, edge, h, w):
+def move_guards_o (G, G_guards, G_edges, G_last_edge, pos, edge, h, w):
     G_edges.add_edge(edge[0], edge[1])
+    G_last_edge=nx.Graph()
+    G_last_edge.add_edge(edge[0], edge[1])
     pos_nodes = get_pos(G)
     if pos_nodes[edge[0]] in list(pos.values()):
         pos1 = pos_nodes[(edge[0][0],edge[0][1])]
@@ -1308,14 +1314,16 @@ def move_guards_o (G, G_guards,  G_edges, pos, edge, h, w):
                     else:
                         if pos[(x,y)][1]+1<=0: pos[(x,y)] = (pos[(x,y)][0], pos[(x,y)][1]+1)
     
-    return G_guards, G_edges, pos, True
+    return G_guards, G_edges, G_last_edge, pos, True
 
 
 """
 Algoritm to move guards on a square grids
 """
-def move_guards_s (G, G_guards, G_edges, pos, edge, h, w):
+def move_guards_s (G, G_guards, G_edges, G_last_edge, pos, edge, h, w):
     G_edges.add_edge(edge[0], edge[1])
+    G_last_edge=nx.Graph()
+    G_last_edge.add_edge(edge[0], edge[1])
     pos_nodes = get_pos(G)
     if pos_nodes[edge[0]] in list(pos.values()):
         pos1 = pos_nodes[(edge[0][0],edge[0][1])]
@@ -1353,7 +1361,7 @@ def move_guards_s (G, G_guards, G_edges, pos, edge, h, w):
                 pos[(x,y)]=pos_cycle[-1]
             else:
                 pos[(x,y)]=pos_cycle[i-1]
-    return G_guards, G_edges, pos, True
+    return G_guards, G_edges, G_last_edge, pos, True
 
 
 """
