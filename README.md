@@ -1,6 +1,6 @@
 # EVC-visualizer
 <p>
-Tool to visualize how an eternal vertex cover guards move when an edge is attacked over grid graphs, particularly hexagonal, triangular, octagonal, and squared grids.
+This is a tool to visualize how an eternal vertex cover guards move when an edge is attacked over grid graphs, particularly hexagonal, triangular, octagonal, and squared grids.
 </p> 
 <p> 
 What is an <b>Eternal Vertex Cover</b>? </br>
