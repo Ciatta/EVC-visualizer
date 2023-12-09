@@ -25,7 +25,6 @@
             <form action="/defend#bottom" method="post">
                 <label for="edge">Next edge:</label>
                 <input type="text" id="edge" name="edge" placeholder="eg. (1,2)">
-                <br> 
                 <input type="submit" id="myButton" class="btn btn-light" value="Submit">
             </form>
             
@@ -49,8 +48,8 @@
         <div class="spinner-border text-light mt-3" id="spinner" style="display: none;"></div> <br>
         <p class="my-2" id="myString" style="display: none;"> loading, please wait...</p> <br>
        
-        <button class="btn btn-light" onclick="document.getElementById('gif-1').src='static/anim2.gif'">
-            Replay</button>
+        <a type="button" class="btn btn-light" href="/defend#bottom" onclick="document.getElementById('gif-1').src='static/anim2.gif'">
+            Replay</a>
 
         <a type="button" class="btn btn-light" href="/">Create another grid</a>
     </div>
