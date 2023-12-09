@@ -7,14 +7,10 @@
     <link rel="icon" type="image/x-icon" href="static/favicon.ico">
     <title>Eternal Vertex Cover Visualizer</title>
 
-    
     <style>
     :root {
         --d: {{display}};}
-    
-    
     </style>
-    
 </head>
 <body>
    
@@ -38,16 +34,18 @@
                     <option value="triangle">Triangle</option>
                 </select>
             <br>
-            <input type="submit" class="btn btn-light" value="Submit">
+            <input type="submit" id="myButton" class="btn btn-light" value="Submit">
         </form>
         <div class="alert alert-danger" role="alert" id="alert" style="display: var(--d);">
             <div> {{message}} </div>
         </div>
-       
+
+        <div class="spinner-border text-light mt-3" id="spinner" style="display: none;"></div> <br>
+        <p class="my-2" id="myString" style="display: none;"> loading, please wait...</p> <br>
     </div>
 
 
-    <div class="row justify-content-evenly my-5">
+    <div class="row justify-content-evenly">
         <div class="div-2 col-4">
             <p style="font-size:16px">
                 Here is a tool for visualizing Eternal Vertex Cover over grid graphs. </br> </br>
@@ -68,9 +66,23 @@
     </div>
 
 
-  
     <footer><p>Developed by: Mauri Giada <a href="https://github.com/Ciatta"> [GitHub]</a></p></footer>
-        
+    
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const myButton = document.getElementById('myButton');
+            const spinner = document.getElementById('spinner');
+            const myString = document.getElementById('myString');
+
+        function toggleLoading() {
+            spinner.style.display = 'inline-block';
+            myString.style.display = 'inline-block';
+            
+        }
+        myButton.addEventListener('click', toggleLoading);
+        });
+    </script>
 
 </body>
 </html>

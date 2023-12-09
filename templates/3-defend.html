@@ -12,6 +12,7 @@
     </style>
     <title>Defend</title>
 </head>
+
 <body>
     <div class="container text-center  my-2">
         <h1>Eternal Vertex Cover - Visualizer</h1>
@@ -25,7 +26,7 @@
                 <label for="edge">Next edge:</label>
                 <input type="text" id="edge" name="edge" placeholder="eg. (1,2)">
                 <br> 
-                <input type="submit" class="btn btn-light" value="Submit">
+                <input type="submit" id="myButton" class="btn btn-light" value="Submit">
             </form>
             
         </div>
@@ -40,19 +41,21 @@
     </div>
 
 
-    
-
-    <div class="container text-center my-2">
+    <div class="container text-center">
         <div class="alert alert-danger my-2" role="alert" id="alert" style="display: var(--d);">
             <div> {{message}} </div>
-        </div>
-        <br>
+        </div><br>
+
+        <div class="spinner-border text-light mt-3" id="spinner" style="display: none;"></div> <br>
+        <p class="my-2" id="myString" style="display: none;"> loading, please wait...</p> <br>
+       
         <button class="btn btn-light" onclick="document.getElementById('gif-1').src='static/anim2.gif'">
             Replay</button>
 
         <a type="button" class="btn btn-light" href="/">Create another grid</a>
     </div>
         
+
     <div class="container text-center">
         <img id="gif-1" class="vh-100 img" src="{{ url_for('static', filename='anim2.gif') }}" alt="...">
     </div>
@@ -60,6 +63,23 @@
 
     <div id="bottom"></div>
     <footer><p>Developed by: Mauri Giada <a href="https://github.com/Ciatta"> [GitHub]</a></p></footer>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const myButton = document.getElementById('myButton');
+            const spinner = document.getElementById('spinner');
+            const myString = document.getElementById('myString');
+
+        function toggleLoading() {
+            spinner.style.display = 'inline-block';
+            myString.style.display = 'inline-block';
+            
+        }
+        myButton.addEventListener('click', toggleLoading);
+        });
+    </script>
+
 </body>
 </html>
 
