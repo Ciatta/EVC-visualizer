@@ -1,5 +1,4 @@
 from flask import Flask, render_template, request
-import webview
 from main import main, defend
 
 
@@ -41,9 +40,6 @@ def attack():
         return render_template('3-defend.html', edge=edge, display='inline-block', message=m)
 
 
-webview.create_window('Eternal Vertex Cover - Visualizer', app) 
 if __name__ == '__main__':
-    app.run(debug=True)
-    #webview.start()
-  
+    app.run()  
 
