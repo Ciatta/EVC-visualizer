@@ -65,7 +65,6 @@ def main(h, w, s, edge):
    
 def defend(edge):
     global width, height, shape, G, G_guards, G_edges, G_last_edge, pos_g, pos_g1
-    print("defend")
     #Fix nodes positions
     for k in pos_g:
         pos_g[k]=(round(pos_g[k][0]), round(pos_g[k][1]))

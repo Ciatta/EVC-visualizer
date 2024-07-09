@@ -27,7 +27,8 @@ def result():
     elif shape=="octagon": t = "Finite Octagonal Grid"
     elif shape=="triangle": t = "Finite Triangular Grid"
     elif shape=="square": t = "Finite Squared Grid"
-    return render_template('2-result.html', h=h, w=w, title=t)
+    if main(int(h), int(w), shape, (0,0)):
+        return render_template('2-result.html', h=h, w=w, title=t)
 
 @app.route('/defend', methods=['POST'])
 def attack():
