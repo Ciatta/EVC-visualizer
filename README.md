@@ -11,7 +11,7 @@ at least one guard covers every edge at all times.
 </p> 
 
 ## Usage
-The application is reachable at the following [link] (http://evc-visualizer.di.uniroma1.it/) </br>
+The application is reachable at the following [link](http://evc-visualizer.di.uniroma1.it/) </br>
 If you want to run it locally, install the dependencies and run the code as follows:
 #### Installing Dependencies
 Install all the dependencies in your environment
