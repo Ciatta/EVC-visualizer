@@ -26,5 +26,5 @@ python app.py
 ```
 
 ## Credits and Resources
-The movement strategies are based on [(Eternal) Vertex Cover Number of Infinite and Finite Grid Graphs](https://doi.org/10.48550/arXiv.2209.05102) </br>
+The defense strategies are based on [(Eternal) Vertex Cover Number of Infinite and Finite Grid Graphs](https://doi.org/10.48550/arXiv.2209.05102) </br>
 Hamiltonian path algorithm [source](https://gist.github.com/mikkelam/ab7966e7ab1c441f947b)
